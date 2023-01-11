@@ -1,5 +1,28 @@
+# Configuring Static IP Addresses On Linux
 
-# Red Hat Enterprise Linux Distros
+Different distributions handle the network interfaces configuration differently.  For permanenet configuration, we are aiming to change the configuration files.
+
+In case you are running distributions with GUI or multiple network managers, it's best to check which are running and disable those which are not needed.
+
+## Identify And Control Network Managers
+
+To check which ones are running, see below.
+
+```bash
+sudo systemctl --type=service | grep --ignore-case 'network'
+```
+
+To disable or enable some of them, these can be used.
+
+```bash
+sudo systemctl stop NetworkManager
+sudo systemctl disable NetworkManager
+
+sudo systemctl start systemd-networkd
+sudo systemctl enable systemd-networkd
+```
+
+## Red Hat Enterprise Linux Distros
 
 > CentOS, Fedora, Scientific Linux, etc.
 
@@ -55,7 +78,7 @@ Where the options mean:
 sudo systemctl restart network
 ```
 
-# Debian Distros
+## Debian Distros
 
 > Kali, Knoppix, Ubuntu, Raspberry Pi OS, etc.
 
@@ -90,7 +113,7 @@ Where the options mean:
 1.3. Restart the system.
 
 
-# Ubuntu Server
+## Ubuntu Server
 
 On Ubuntu, [netplan](https://manpages.ubuntu.com/manpages/jammy/man8/netplan-apply.8.html) configuration files are used to configure network interfaces. [Here](https://netplan.io/examples) is a great collection of netplan configuration examples.
 
@@ -125,7 +148,7 @@ sudo netplan apply
 ```
 
 
-# References
+## References
 
 1. [Good read about manual network configuration in Linux on baeldung.com](https://www.baeldung.com/linux/set-static-ip-address)
 2. [Ubuntu official documentation about network configuration](https://ubuntu.com/server/docs/network-configuration)
