@@ -4,7 +4,13 @@ Different distributions handle the network interfaces configuration differently.
 
 In case you are running distributions with GUI or multiple network managers, it's best to check which are running and disable those which are not needed.
 
-## Identify And Control Network Managers
+[[#Check Network Managers]]
+[[#Red Hat Enterprise Linux Distros]]
+[[#Debian Distros]]
+[[#Ubuntu Server]]
+[[#References]]
+
+## Check Network Managers
 
 To check which ones are running, see below.
 
