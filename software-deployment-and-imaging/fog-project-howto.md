@@ -19,9 +19,7 @@ Prior to installing the FOG project, make sure to have the Linux box updated and
 
 Also, if you are using external DHCP service, make sure that scope options 066 and 067 are configured as explained [here](https://docs.fogproject.org/en/latest/installation/network_setup.html)
 
-### Check firewall configuration
-
-If firewall is active, disable it.
+### Disable Firewall
 
 #### Ubuntu
 
