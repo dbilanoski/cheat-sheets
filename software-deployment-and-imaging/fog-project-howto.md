@@ -6,11 +6,6 @@ alias: fog
 
 FOG project is a free open-source network computer cloning and management solution.
 
-[[#Installation]]
-[[#Capturing images]]
-[[#Deploying images]]
-[[#Transfering and archiving images]]
-
 ## Installation
 
 Official documentation [here](https://docs.fogproject.org/en/latest/).
@@ -104,6 +99,28 @@ Detailed instructions available in the [official documentation](https://docs.fog
 
 ## Deploying images
 
+Images can be deployed either as a standalone task  without host registration or as a task being part of a managed FOG host.
+
+Detailed instructions available in the [official documentation](https://docs.fogproject.org/en/latest/getting_started/deploy_an_image.html).
+
+
 ## Transfering and archiving images
 
+### Transfering all images to new server
 
+1. Delete images you do not need (both in /images folder and via FOG web page GUI)
+2. Export image list from FOG web page GUI (Images > export) and save it as a .csv file
+3. Copy images from current to new server
+	1. Many ways to copy those, example with [SCP](https://en.wikipedia.org/wiki/Secure_copy_protocol) below
+	   
+```bash
+scp -r myUser@10.191.8.60:/images/\{HP600G3win10,HP705G5_win10,HP600G5-SFF_win10-v2004,HP600G5-DM_win10-v2004_2,HP800G2-win10-v2004,HP600G4_win10\} /images/
+```
+
+SCP example explanation:
+* Command initiated on new server (where I want to copy files to)
+* Command is saying this: access my old FOG server on 10.191.8.60 as user "myUser" and from /images copy folders HP600G3win10,HP705G5_win10,HP600G5-SFF_win10-v2004,HP600G5-DM_win10-v2004_2,HP800G2-win10-v2004,HP600G4_win10 to the "/images" folder on my new server
+
+Useful SCP examples [here](http://www.hypexr.org/linux_scp_help.php](http://www.hypexr.org/linux_scp_help.php).
+
+4. On your new FOG server, import .csv file with images
