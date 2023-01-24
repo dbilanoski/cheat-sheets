@@ -106,16 +106,28 @@ Detailed instructions available in the [official documentation](https://docs.fog
 
 ## Transfering and archiving images
 
+### Transfering single/multiple images to new server
+
+1. In the FOG web GUI, locate the image you are going to copy to a new server and document/screenshot the image settings
+2. Copy image you want from old to new server
+	1. Many ways to copy those, example with [[scp|SCP]] below
+	   
+	```bash
+	scp -r myUser@10.191.8.60:/images/HP600G3win10 /images/
+	```
+	   
+3. On the new server, in FOG web GUI, create new image and make sure that the *name* and the *path* are according to the copied image. If you did not change anything, screenshot from the old server can be used letter by letter.
+
 ### Transfering all images to new server
 
 1. Delete images you do not need (both in /images folder and via FOG web page GUI)
 2. Export image list from FOG web page GUI (Images > export) and save it as a .csv file
 3. Copy images from current to new server
-	1. Many ways to copy those, example with [SCP](https://en.wikipedia.org/wiki/Secure_copy_protocol) below
+	1. Many ways to copy those, example with [[scp|SCP]] below
 	   
-```bash
-scp -r myUser@10.191.8.60:/images/\{HP600G3win10,HP705G5_win10,HP600G5-SFF_win10-v2004,HP600G5-DM_win10-v2004_2,HP800G2-win10-v2004,HP600G4_win10\} /images/
-```
+	```bash
+	scp -r myUser@10.191.8.60:/images/\{HP600G3win10,HP705G5_win10,HP600G5-SFF_win10-v2004,HP600G5-DM_win10-v2004_2,HP800G2-win10-v2004,HP600G4_win10\} /images/
+	```
 
 SCP example explanation:
 * Command initiated on new server (where I want to copy files to)
@@ -124,3 +136,81 @@ SCP example explanation:
 Useful SCP examples [here](http://www.hypexr.org/linux_scp_help.php](http://www.hypexr.org/linux_scp_help.php).
 
 4. On your new FOG server, import .csv file with images
+
+### Archiving images
+
+Here we are pulling FOG images from the remote FOG server to our local repository and archiving them on the fly to [tarballs](https://computing.help.inf.ed.ac.uk/FAQ/whats-tarball-or-how-do-i-unpack-or-create-tgz-or-targz-file). Later, they can be transfered to other servers and extracted also on the fly, which makes this approach both simple and practical.
+
+
+1.  Make sure you have enough space on your repository workstation
+   
+2.  Make sure you document each image settings, best with screenshot from the FOG web GUI on the server you are getting image from
+    
+3.  Open CMD as administrator / bash with sudo then run this command:  
+      
+    ```bash
+    Ssh your-username@fog-server-ip-address tar czvf - /images/image-folder-name > C:\desired-folder-on-your-local-machine\image-folder-name.tar.gz  
+    ```
+    
+    Example:  
+	```bash
+    ssh dbilanoski@10.191.8.60 tar czvf - /images/HP600G3-SFF_win10-v21H2 > C:\fog_images\HP600G3-SFF_win10-v21H2.tar.gz  
+    ```
+      
+    This one will copy, archive and compress image from FOG server at 10.191.8.60 in /images/HP600G3-SFF_win10-v21H2 to C:\\fog_images\\HP600G3-SFF_win10-v21H2.tar.gz  
+      
+4.  Wait for it to finish - as images are around 10 GB compressed, this might take some time depending on the network configuration
+    
+
+Repeat for each image you want to archive  and make sure to document each image settings as suggested in step 2.
+
+
+## Troubleshooting & Issues
+
+### Installation script not working with PHP related errors
+
+This is due to outdated PHP version references in the installation script on the "Stable version" brach on [FOG Project Github](https://github.com/FOGProject/fogproject).
+
+#### Solution
+
+Until updated, easiest fix is to use the installation script on the [development version](https://github.com/FOGProject/fogproject#install-latest-development-version) branch where this is updated.
+
+### Boot issues with DHCP timeouts on some Realtek cards
+
+On some newer Realtek NICs issue with DHCP timeout was detected when trying to load ipxe.efi.
+
+#### Solution
+
+
+1. First update the FOG kernel, see [here](https://wiki.fogproject.org/wiki/index.php?title=Kernel_Update) for instructions, [here](https://docs.fogproject.org/en/latest/reference/manual_kernel_upgrade.html) also
+    
+	- To check the current version, log to the FOG machine, navigate to /var/www/html/fog/service/ipxe
+	- Then type file bzImage - version will be shown
+	- Update to latest stable version, update both 32 and 64 images
+    
+
+2. If that does not help, switching boot image is needed
+    
+	- Check on the FOG machine that you have snp.efi and snponly.efi file in the /tftpboot directory
+	- On your DHCP server, change scope option 067 from *ipxe.efi* to *snp.efi*
+	- Test if this is now working on other production machines
+	- Snponly.efi can also be used here, you can check differences [here](https://ipxe.org/appnote/buildtargets)**
+
+To preserve usage of ipxe.efi on cards where snponly.efi is working, you can try this:
+    
+- Check if there is " DMA Protection" in BIOS - disable it, try to boot
+- Check if there is "Mac-address pass-through" in BIOS - disable it, try to boot
+
+#### References
+
+1. https://ipxe.org/err/040ee1
+2. https://forums.fogproject.org/topic/15169/pxe-boot-issue-with-hp-probook-450-g8-realtek-nic/14
+3. [https://github.com/warewulf/warewulf3/issues/84](https://github.com/warewulf/warewulf3/issues/84)
+
+
+
+## References
+
+1.  Boot types in ipxe explained [here](https://ipxe.org/appnote/buildtargets)
+2.  Manual upgrade of FOG kernel [here](https://docs.fogproject.org/en/latest/reference/manual_kernel_upgrade.html)
+3. Tar & GZip examples [here](https://www.cs.hmc.edu/~mjeffryes/targzip.html)
