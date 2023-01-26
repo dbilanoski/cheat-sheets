@@ -75,11 +75,12 @@ $ sudo chmod g+w /share
 
 #### 1. Create Samba user
    
-   In this example, we are smbglobal user.
+In this example, we are smbglobal user.
+
+```bash
+sudo smbpasswd -a smbglobal
+```
    
-	```bash
-	sudo smbpasswd -a smbglobal
-	```
 
 #### 2. Configure Samba
 
