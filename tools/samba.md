@@ -5,13 +5,13 @@
 Depending on your distributions, software repository commands might look different. 
 Example is on Ubuntu server.
 
-Install Samba
+**Install Samba**
 
 ```bash
 Sudo apt install samba
 ```
 
-Start services and enable them on startup
+**Start services and enable them on startup**
 
 ```bash
 sudo systemctl start smbd.service
@@ -22,7 +22,7 @@ sudo systemctl enable smbd.service
 sudo systemctl enable nmbd.service
 ```
 
-Create Samba user
+**Create Samba user**
    
 In this example, we are creating smbglobal user.
    
@@ -30,7 +30,9 @@ In this example, we are creating smbglobal user.
 sudo smbpasswd -a smbglobal
 ```
 
+
 ## Simple Samba share with unrestricted access
+
 
 ## Samba shares with Active Directory Authentication
 
@@ -86,7 +88,7 @@ $ sudo chmod g+w /share
 Make sure you installed Samba as explained in the [[samba#Install Samba | Install Samba]] chapter.
 
 
-#### 1. Edit configuration file
+#### 3.1. Edit configuration file
 
 First backup current config, then start writing new.
 
@@ -138,7 +140,7 @@ Here we are saying:
 	directory mask = 0775
 ```
 
-#### 2. Test the configuration and reload services
+#### 3.2. Test the configuration and reload services
 
 ```bash
 tesparm
@@ -151,7 +153,7 @@ sudo systemctl restart smbd nmbd
 ```
 
 
-#### 3. Test Access
+#### 3.3. Test Access
 
 Test access by visiting "\\\\your-server-ip\share" with your Active Directory accounts.
 

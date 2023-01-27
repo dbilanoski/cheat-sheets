@@ -6,7 +6,7 @@ alias: ad, "active directory"
 
 Ubuntu server will be used as an example but the procedure can be applied to other distros. In this approach, we are counting to use samba shares with AD authentication which is why some additional packages are installed and configured.
 
-## Prequisites
+## Prerequisites
 
 1. AD account that has rights to join a system to the domain
 2. A Linux server properly configured with DNS pointers which can find the Domain Controller
@@ -40,14 +40,14 @@ Ubuntu server will be used as an example but the procedure can be applied to oth
 
 ### 2. Install needed application packages
 
-In this approach, we are using [realmd](https://www.freedesktop.org/software/realmd/) for discovering and interacting with the AD and [chrony](https://chrony.tuxfamily.org/) for synchronizing time agains the domain NTP server and [samba](https://www.samba.org/) for configuring shared resources later.
+In this approach, we are using [realmd](https://www.freedesktop.org/software/realmd/) for discovering and interacting with the AD and [chrony](https://chrony.tuxfamily.org/) for synchronising time against the domain NTP server and [samba](https://www.samba.org/) for configuring shared resources later.
 
 ```bash
 Sudo apt install realmd samba libpam-winbind krb5-user krb5-config chrony
 ```
 
 
-### 3. Configure time synchronization
+### 3. Configure time synchronisation
 
 Check the [[chrony]] procedure.
 
@@ -60,7 +60,7 @@ For this example, we'll use:
 1. First check if the domain is reachable.
 
 	```bash
-	sudo realmd discover example.local
+	sudo realm discover example.local
 	```
 	
 	If yes, expected result might look something like this.
@@ -109,7 +109,7 @@ This file needs to be updated so the winbind is also referenced.
 sudo nano /etc/nsswitch.conf
 ```
 
-Locate this part and add **winbind** to the end of *passwd* and *group*. 
+Locate this part and add **winbind** to the end of *passwd* and *group* if not already there.
 
 ```bash
 # Example configuration of GNU Name Service Switch functionality.
@@ -121,12 +121,9 @@ group:          files systemd winbind
 shadow:         files
 gshadow:        files
 ```
-   ```bash
-   getent passwd EXAMPLE.LOCAL\\someADuser
-   ```
 
 
-### 6. Test by quering some AD user
+### 6. Test by querying some AD user
 
 ```bash
 getent passwd EXAMPLE.LOCAL\\someADuser
@@ -150,7 +147,7 @@ PasswordAuthentication yes
 #PermitEmptyPasswords no
 ```
    
-To enable home folder creation for console/ssh acceses per user, execute:
+To enable home folder creation for console/ssh access per user, execute:
 
 ```bash
 sudo pam-auth-update --enable mkhomedir

@@ -10,13 +10,13 @@ sudo apt install chrony
 
 ## Configuration
 
-Access the config file
+Access the configuration file
 
 ```bash
 sudo nano /etc/chrony/chrony.conf
 ```
 
-Locate this part and comment out default servers and add your own NTP servers addressess.
+Locate this part and comment out default servers and add your own NTP servers addresses.
 
 ```bash
 # This will use (up to):
@@ -64,6 +64,6 @@ timedatectl status
 
 ## References
 
-1. [Official pages][https://chrony.tuxfamily.org/]
+1. [Chrony Official pages][https://chrony.tuxfamily.org/]
 2. [Red Hat Guides](https://www.redhat.com/sysadmin/chrony-time-services-linux)
 
