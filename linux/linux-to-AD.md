@@ -143,13 +143,14 @@ If we expect AD users to SSH into the system, edit the sshd_config file.
    ```
    
 Locate and configure *PasswordAuthentication yes*.
+
 ```bash
 # To disable tunneled clear text passwords, change to no here!
 PasswordAuthentication yes
 #PermitEmptyPasswords no
 ```
    
-To enable home folder creation for console/ssh acceses per user
+To enable home folder creation for console/ssh acceses per user, execute:
 
 ```bash
 sudo pam-auth-update --enable mkhomedir

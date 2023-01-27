@@ -5,6 +5,8 @@
 Depending on your distributions, software repository commands might look different. 
 Example is on Ubuntu server.
 
+Install Samba
+
 ```bash
 Sudo apt install samba
 ```
@@ -18,6 +20,14 @@ sudo systemctl start nmbd.service
 ```bash
 sudo systemctl enable smbd.service
 sudo systemctl enable nmbd.service
+```
+
+Create Samba user
+   
+In this example, we are creating smbglobal user.
+   
+```bash
+sudo smbpasswd -a smbglobal
 ```
 
 ## Simple Samba share with unrestricted access
@@ -73,16 +83,10 @@ $ sudo chmod g+w /share
 
 ### 3. Configure Samba
 
-#### 1. Create Samba user
-   
-In this example, we are smbglobal user.
+Make sure you installed Samba as explained in the [[samba#Install Samba | Install Samba]] chapter.
 
-```bash
-sudo smbpasswd -a smbglobal
-```
-   
 
-#### 2. Configure Samba
+#### 1. Edit configuration file
 
 First backup current config, then start writing new.
 
@@ -95,8 +99,8 @@ sudo nano /etc/samba/smb.conf
 
 Here we are saying:
 - Access via example.local AD objects
-- Shared folder called *share* read only by default except for objects under *write list*
-- Write is permited for AD members of security  group *Admins*, local group *smbglobals*  and members of security groups *Domain Controllers* and *Domain computers* which will provide access for processes under local system accounts.
+- Shared folder called *share* is read only by default except for objects under *write list*
+- Write is permited for AD members of security  group *Admins*, local group *smbglobals*  and members of security groups *Domain Controllers* and *Domain computers* which will provide access for processes under [local system accounts](https://learn.microsoft.com/en-us/windows/win32/services/localsystem-account).
 - Everything created by external users in the *share* directory will be owned by smbglobal/smbglobals
 
 ```bash
@@ -134,13 +138,13 @@ Here we are saying:
 	directory mask = 0775
 ```
 
-Test the configuration
+#### 2. Test the configuration and reload services
 
 ```bash
 tesparm
 ```
 
-If no errors, reload Samba services.
+If there are no errors, reload Samba services.
 
 ```bash
 sudo systemctl restart smbd nmbd
