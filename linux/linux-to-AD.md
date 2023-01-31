@@ -165,6 +165,7 @@ If those are to be used with Active Directory objects, check the [[samba|samba c
 3. [Samba Official on Setting up Samba as a Domain Menber](https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Domain_Member)
 4. [Debian Official Docs on SSSD and Active Directory](https://wiki.debian.org/AuthenticatingLinuxWithActiveDirectorySssd)
 5. [Samba Official about Winbind](https://www.samba.org/~ab/output/htmldocs/Samba3-HOWTO/winbind.html)
+6. [Useful post about Guest Access issues on Samba integrated to AD](https://serverfault.com/questions/984385/guest-share-for-domain-integrated-samba-server)
 
 
 

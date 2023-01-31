@@ -214,3 +214,4 @@ To preserve usage of ipxe.efi on cards where snponly.efi is working, you can try
 1.  Boot types in ipxe explained [here](https://ipxe.org/appnote/buildtargets)
 2.  Manual upgrade of FOG kernel [here](https://docs.fogproject.org/en/latest/reference/manual_kernel_upgrade.html)
 3. Tar & GZip examples [here](https://www.cs.hmc.edu/~mjeffryes/targzip.html)
+4. FOG Snapin Packs documentation [here](https://wiki.fogproject.org/wiki/index.php?title=SnapinPacks)
