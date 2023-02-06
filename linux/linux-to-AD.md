@@ -167,6 +167,7 @@ If those are to be used with Active Directory objects, check the [[samba|samba c
 5. [Samba Official about Winbind](https://www.samba.org/~ab/output/htmldocs/Samba3-HOWTO/winbind.html)
 6. [Useful post about Guest Access issues on Samba integrated to AD](https://serverfault.com/questions/984385/guest-share-for-domain-integrated-samba-server)
 7. [Useful post about getent not resolving AD users depending on the used backend](https://forums.freebsd.org/threads/samba-ad-getent-passwd-doesnt-return-domain-users.62554/)
+8. [Useful post about troublehsooting getent not resolving AD users and resetting SAMBA config](https://www.claudiokuenzler.com/blog/1066/samba-getent-passwd-no-active-directory-users-wbinfo-works)
 
 
 

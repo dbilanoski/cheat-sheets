@@ -170,3 +170,5 @@ In the */etc/samba/smb.conf*, remove `map to guest = bad user`
 
 
 ## References
+
+1. [Good read on troubleshooting Samba with AD integration](https://www.claudiokuenzler.com/blog/1066/samba-getent-passwd-no-active-directory-users-wbinfo-works)
