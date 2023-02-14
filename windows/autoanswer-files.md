@@ -1,3 +1,3 @@
 ---
-alias: 'autoanswer.xml', unattended
+alias: unattended, "unattended.xml"
 ---

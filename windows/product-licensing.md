@@ -1,5 +1,5 @@
 ---
-alias: slmgr, 'product key'
+alias: slmgr, "product key"
 ---
 
 # Activating Windows from CLI with slmgr
@@ -15,6 +15,7 @@ slmgr.vbs [<ComputerName> [<User> <Password>]] [<Options>]
 ```
 
 ## Command Options
+
 
 ### Display Licence information
 
