@@ -80,3 +80,43 @@ Where:
 * `/shutdown` will shut down the computer after the sysprep procedure finishes
 * `/unattend` will use provided autoanswer xml file to pre-configure the Windows system
 
+
+## Troubleshooting & Issues
+
+Sysprep logs are kept here: 
+
+```batch
+C:\Windows\System32\Sysprep\Panther
+```
+
+where:
+
+* *setupacc.log* contains information about setup actions
+* *setuperr.log* contains information about setup errors
+
+On issues with sysprep the procedure will simply exit pointing you to check the logs for details.
+
+### Microsoft.LanguageExperiencePack-GB breaking the sysprep
+
+In case sysprep fails with this error in the *setupacc.log*:
+
+*Error SYSPRP Package Microsoft.LanguageExperiencePack_17134.2.4.0_neutral__8wekyb3d8bbwe was installed for a user, but not provisioned for all users. This package will not function properly in the sysprep image.**
+
+Problematic package needs to be removed for all users, procedure below.
+
+```powershell
+# List all packages and locate Microsoft.LanguageExperiencePack-GB
+# Copy it's packageFullName string
+get-appxpackage -allusers | select name, packagefullname
+
+```
+
+```powershell
+remove-appxpackage -allusers -package <paste-the-packagefullname-from-before>
+```
+
+Start the sysprep procedure again.
+
+## References
+
+1. [Official documentation on Sysprep procedure overview](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/sysprep-process-overview?view=windows-11)
