@@ -181,7 +181,6 @@ On some newer Realtek NICs issue with DHCP timeout was detected when trying to l
 
 #### Solution
 
-
 1. First update the FOG kernel, see [here](https://wiki.fogproject.org/wiki/index.php?title=Kernel_Update) for instructions, [here](https://docs.fogproject.org/en/latest/reference/manual_kernel_upgrade.html) also
     
 	- To check the current version, log to the FOG machine, navigate to /var/www/html/fog/service/ipxe
@@ -207,6 +206,26 @@ To preserve usage of ipxe.efi on cards where snponly.efi is working, you can try
 2. https://forums.fogproject.org/topic/15169/pxe-boot-issue-with-hp-probook-450-g8-realtek-nic/14
 3. [https://github.com/warewulf/warewulf3/issues/84](https://github.com/warewulf/warewulf3/issues/84)
 
+
+### Scheduled capture & deploy FOG tasks not initiating on boot
+
+This was observed on newer HP lapops where scheduled capturing would not start on a network boot.
+
+Rather, user would be greeted with the usual FOG network boot screen and message that the HOST is not registered, even though the host is visible in the FOG database. Further more, deployment of image would be possible from the FOG boot menu but not as a scheduled task to be executed prior to the FOG boot menu.
+
+* Re-registering the host will return that the host is already registered.
+
+* Boot image where issue was confirmed: ipxe.efi, smp.efi
+
+#### Solution
+
+This was caused by new "Mac Address passthrough" feature which needs to be disabled.
+
+1. Check BIOS settings
+2. Under “Advanced”, locate “MAC Address passthrough”
+3. Set it to “Disabled”
+
+In case of network warnings during boot where the message shortly says “Legacy IP address wrapper is used” and some hexadecimal value, using smp.efi will fix it.
 
 
 ## References
