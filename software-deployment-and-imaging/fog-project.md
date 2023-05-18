@@ -219,11 +219,11 @@ Rather, user would be greeted with the usual FOG network boot screen and message
 
 #### Solution
 
-This was caused by new "Mac Address passthrough" feature which needs to be disabled.
+This was caused by new "Mac Address passthrough" feature which needs to be disabled or configured manually with custom MAC address.
 
 1. Check BIOS settings
 2. Under “Advanced”, locate “MAC Address passthrough”
-3. Set it to “Disabled”
+3. Set it to “Disabled” (or manualy configure custom MAC address)
 
 In case of network warnings during boot where the message shortly says “Legacy IP address wrapper is used” and some hexadecimal value, using smp.efi will fix it.
 
