@@ -94,8 +94,8 @@ Be sure to adjust machine name, user name and reporting file paths in those scri
 # https://azurecloudai.blog/2015/09/24/powershell-retrieve-group-policy-details-for-remote-computer/
 
 # Config (adjust these to your situation) 
-$machineName = "odin\hrospcwpkg1"
-$userName = "odin\ops60webid"
+$machineName = "domain\machineName"
+$userName = "domain\userName"
 
 
 # Instantiate the GPMgmt.GPM class that allows access to most of the GPMC functionality  
