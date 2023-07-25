@@ -68,9 +68,22 @@ For retail editions and volume systems that have a KMS host key or a Multiple Ac
 
 For systems that have a Generic Volume License Key (GVLK) installed, this prompts a KMS activation attempt.
 
+## Issues & Troubleshooting
+
+### OxC004F074 error due to wrong time on computer
+
+This one will occur upon executing /ato command with a volume key previously loaded which will result with error:
+
+*"Activating Windows ... Error: OxC004F074 The Software Licencing Service reported that the computer could not be activated. No Key Management Service could be contacted. Please see the Application event log for additional information."*
+
+Checking the logs under Event Viewer\Applications, there will be an event 12288 but not the needed following 12289 event. Instead, there will be a 8198 event with a brief error description and a hexadecimal footprint (did not save it).
+
+Solution is to disable the automatic time sync (in case it's not working) and configure the time manually or enable the automatic time sync so it can correctly pull the time data from Windows time servers.
+
 ## References
 
 1. [Official doc about slmgr commands](https://learn.microsoft.com/en-us/windows-server/get-started/activation-slmgr-vbs-options)
+2. [Official docs about troubleshooting kms](https://learn.microsoft.com/en-us/windows-server/get-started/activation-troubleshoot-kms-general)
 
 
 
