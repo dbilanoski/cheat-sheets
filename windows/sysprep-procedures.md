@@ -117,6 +117,30 @@ remove-appxpackage -allusers -package <paste-the-packagefullname-from-before>
 
 Start the sysprep procedure again.
 
+### "BitLocker is on for the OS volume" error
+
+This one happens when the BitLocker is enabled or encryption is in progress. It can also happen when the BitLocker is not enabled but BDE goes to waiting status because it detects the TPM module is active (rare).
+
+To check BitLocker status:
+```batch
+manage-bde -status
+```
+
+To disable BitLocker on the OS drive:
+
+In Powershell
+
+```powershell
+Disable-Bitlocker –MountPoint "C:"
+```
+
+In Command Prompt
+```cmd
+manage-bde -off C:
+```
+
+In case BitLocker is off and you still get error during sysprep, disable TPM (Trusted Platform Module) in the BIOS. For some devices,  PTT (Intel Platform Trust Technology) also needs to be disabled. 
+
 ## References
 
 1. [Official documentation on Sysprep procedure overview](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/sysprep-process-overview?view=windows-11)
