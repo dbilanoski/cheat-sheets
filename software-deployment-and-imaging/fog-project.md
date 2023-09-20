@@ -209,7 +209,7 @@ To preserve usage of ipxe.efi on cards where snponly.efi is working, you can try
 
 ### Scheduled capture & deploy FOG tasks not initiating on boot
 
-This was observed on newer HP lapops where scheduled capturing would not start on a network boot.
+This was observed on newer HP laptops where scheduled capturing would not start on a network boot.
 
 Rather, user would be greeted with the usual FOG network boot screen and message that the HOST is not registered, even though the host is visible in the FOG database. Further more, deployment of image would be possible from the FOG boot menu but not as a scheduled task to be executed prior to the FOG boot menu.
 
