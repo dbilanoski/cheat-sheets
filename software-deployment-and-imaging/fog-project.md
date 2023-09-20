@@ -234,3 +234,14 @@ In case of network warnings during boot where the message shortly says “Legacy
 2.  Manual upgrade of FOG kernel [here](https://docs.fogproject.org/en/latest/reference/manual_kernel_upgrade.html)
 3. Tar & GZip examples [here](https://www.cs.hmc.edu/~mjeffryes/targzip.html)
 4. FOG Snapin Packs documentation [here](https://wiki.fogproject.org/wiki/index.php?title=SnapinPacks)
+
+
+### Not booting to FOG menu on newer HP devices
+
+It was observed on newer HP devices that the network boot to the FOG menu will not work after installing Windows 11, even though scheduled tasks of capturing the image did work while the system was not installed so the capturing was actually possible on the same device.
+#### Solution
+
+In the BIOS, under "Advanced", turn off:
+* HP Sure Start
+* HP Secure Boot
+* MAC Address Passthrough should be left to "System" if the device has an ethernet port
