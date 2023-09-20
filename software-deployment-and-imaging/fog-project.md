@@ -139,7 +139,7 @@ Useful SCP examples [here](http://www.hypexr.org/linux_scp_help.php](http://www.
 
 ### Archiving images
 
-Here we are pulling FOG images from the remote FOG server to our local repository and archiving them on the fly to [tarballs](https://computing.help.inf.ed.ac.uk/FAQ/whats-tarball-or-how-do-i-unpack-or-create-tgz-or-targz-file). Later, they can be transfered to other servers and extracted also on the fly, which makes this approach both simple and practical.
+Here we are pulling FOG images from the remote FOG server to our local repository and archiving them on the fly to [tarballs](https://computing.help.inf.ed.ac.uk/FAQ/whats-tarball-or-how-do-i-unpack-or-create-tgz-or-targz-file). Later, they can be transferred to other servers and extracted also on the fly, which makes this approach both simple and practical.
 
 
 1.  Make sure you have enough space on your repository workstation
@@ -164,6 +164,24 @@ Here we are pulling FOG images from the remote FOG server to our local repositor
 
 Repeat for each image you want to archive  and make sure to document each image settings as suggested in step 2.
 
+### Importing archived image
+
+Here we are copying and unarchiving tar balled images back to the FOG server.
+
+1. Open CMD as administrator on your machine where the archived image is and execute this one:
+   
+   ```cmd
+    Ssh your-username@fog-server-ip-address "cd /images/ && tar -xzv --strip-components 1" < C:\your-downlaoded-image-path\image.tar.gz
+   ```
+   
+   Example:
+   ```cmd
+   ssh dbilanoski@10.191.8.60 "cd /images && tar -xvz --strip-components 1" < C:\fog_images\HPEliteBook-650-G10_win11-v22H2.tar.gz
+   ```
+   
+   This will also take some time, depending on the local conditions.
+	
+2. Once transfer is completed and confirmed to be in the /images folder, open FOG GUI, navigate to "Images", create new image and write parameters to match the original when the image was archived. Previous steps there suggested screenshots which is the best method to avoid mistakes. Name and image path are important.
 
 ## Troubleshooting & Issues
 
