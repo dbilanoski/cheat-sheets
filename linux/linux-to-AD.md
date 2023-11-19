@@ -16,7 +16,7 @@ Ubuntu server will be used as an example but the procedure can be applied to oth
 
 ### 1. Basic configuration of the Linux server
 
-1. Configure FQDN hostname
+1. Configure FQDN host name
    
 	```bash
 	sudo hostnamectl set-hostname ExampleName
@@ -40,14 +40,14 @@ Ubuntu server will be used as an example but the procedure can be applied to oth
 
 ### 2. Install needed application packages
 
-In this approach, we are using [realmd](https://www.freedesktop.org/software/realmd/) for discovering and interacting with the AD and [chrony](https://chrony.tuxfamily.org/) for synchronising time against the domain NTP server and [samba](https://www.samba.org/) for configuring shared resources later.
+In this approach, we are using [realmd](https://www.freedesktop.org/software/realmd/) for discovering and interacting with the AD and [chrony](https://chrony.tuxfamily.org/) for synchronizing time against the domain NTP server and [samba](https://www.samba.org/) for configuring shared resources later.
 
 ```bash
 Sudo apt install realmd samba libpam-winbind krb5-user krb5-config chrony
 ```
 
 
-### 3. Configure time synchronisation
+### 3. Configure time synchronization
 
 Check the [[chrony]] procedure.
 

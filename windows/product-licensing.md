@@ -6,7 +6,7 @@ alias: slmgr, "product key"
 
 Software Licensing Management Tool (slmgr) is a VBS file in Windows against which you can run commands to perform Windows Activation and Key Management Service (KMS) related tasks.
 
-Slmgr. vbs is used only for the Windows operating system. Ospp. vbs manages volume licensing for other Microsoft products
+Slmgr.vbs is used only for the Windows operating system. Ospp.vbs manages volume licensing for other Microsoft products
 
 ## Syntax
 

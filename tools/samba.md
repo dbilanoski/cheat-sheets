@@ -47,9 +47,9 @@ In this setup, we are using:
 
 ### Procedure
 
-### 1. Prepare local users
+#### 1. Prepare local users
 
-Create local user and grup which will be owners of the share.
+Create local user and group which will be owners of the share.
 
 In this example, we are creating user *smbglobal* and group *smbglobals*.
 
@@ -64,7 +64,7 @@ sudo passwd smbglobal
 ```
 
 
-### 2. Prepare folders
+#### 2. Prepare folders
 
 Create folder which will be root of your share.
 
@@ -83,12 +83,12 @@ $ sudo chmod g+w /share
 ```
 
 
-### 3. Configure Samba
+#### 3. Configure Samba
 
 Make sure you installed Samba as explained in the [[samba#Install Samba | Install Samba]] chapter.
 
 
-#### 3.1. Edit configuration file
+##### 3.1. Edit configuration file
 
 First backup current config, then start writing new.
 
@@ -102,7 +102,7 @@ sudo nano /etc/samba/smb.conf
 Here we are saying:
 - Access via example.local AD objects
 - Shared folder called *share* is read only by default except for objects under *write list*
-- Write is permited for AD members of security  group *Admins*, local group *smbglobals*  and members of security groups *Domain Controllers* and *Domain computers* which will provide access for processes under [local system accounts](https://learn.microsoft.com/en-us/windows/win32/services/localsystem-account).
+- Write is permitted for AD members of security  group *Admins*, local group *smbglobals*  and members of security groups *Domain Controllers* and *Domain computers* which will provide access for processes under [local system accounts](https://learn.microsoft.com/en-us/windows/win32/services/localsystem-account).
 - Everything created by external users in the *share* directory will be owned by smbglobal/smbglobals
 
 ```bash
@@ -140,7 +140,7 @@ Here we are saying:
 	directory mask = 0775
 ```
 
-#### 3.2. Test the configuration and reload services
+##### 3.2. Test the configuration and reload services
 
 ```bash
 tesparm
@@ -153,7 +153,7 @@ sudo systemctl restart smbd nmbd
 ```
 
 
-#### 3.3. Test Access
+##### 3.3. Test Access
 
 Test access by visiting "\\\\your-server-ip\share" with your Active Directory accounts.
 
@@ -162,7 +162,7 @@ Test access by visiting "\\\\your-server-ip\share" with your Active Directory ac
 
 ### Access Issues with SMB Signing
 
-SMB signing enforcement screws guest access on unsecure samba servers - guest account mapping needs to be removed otherwise users accessing from Windows are not prompted to enter credentials even for non-guest share.
+SMB signing enforcement screws guest access on insecure samba servers - guest account mapping needs to be removed otherwise users accessing from Windows are not prompted to enter credentials even for non-guest share.
 
 In the */etc/samba/smb.conf*, remove `map to guest = bad user`
 

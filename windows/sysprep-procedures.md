@@ -6,18 +6,18 @@ alias: sysprep
 
 Generalizing the image removes computer-specific information such as installed drivers and the computer security identifier (SID). You can either use [Sysprep](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/sysprep--system-preparation--overview?view=windows-11) by itself or Sysprep with an [unattend](https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/) answer file to generalize your image and make it ready for deployment.
 
-Mostly this is used for generalizing and preconfiguring images for deployment.
+Mostly this is used for generalizing and pre-configuring images for deployment.
 
 ## Preparation
 
-Before standardizing the OS, configure Windows and install sofware you might want to include.
+Before standardizing the OS, configure Windows and install software you might want to include.
 
 Best to have it as follows:
 - Clean installation of the latest Microsoft Windows version
-- Windows update performed to have latests updates fully
+- Windows update performed to have latest updates fully
 - OS settings configured and Windows additional features installed
 
-**Useful batch script I generaly use in my enviroment**
+**Useful batch script from my own environment**
 
 ```batch
 REM Disable firewalls
@@ -44,7 +44,7 @@ Slmgr.vbs /ato
 REM Set the Timezone
 tzutil /s "Central Europe Standard Time"
 
-REM Enable additional components
+REM Enable additional components which you need
 DISM /online /enable-feature /featurename:SmbDirect -ALL
 DISM /Online /Enable-Feature /FeatureName:NetFx3 /All 
 DISM /online /enable-feature /featurename:NetFx4-AdvSrvs -ALL

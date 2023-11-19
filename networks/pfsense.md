@@ -31,7 +31,7 @@ Description: Something descriptive
 
 3. Hit "Save" and you should be good to go
 
-In case your pfSense sits behind DSL/Cable modem or other router, update won't be triggered on public ip change per detection but once in a day per "rc.dyndns.update" cron job exectuion. For this to be working in a more timely manner, we need to edit the cron job repetition interval from once in a day to every 5 minutes.
+In case your pfSense sits behind DSL/Cable modem or other router, update won't be triggered on public IP change per detection but once in a day per "rc.dyndns.update" cron job exectuion. For this to be working in a more timely manner, we need to edit the cron job repetition interval from once in a day to every 5 minutes.
 
 1. Install "Cron" package in pfSense by doing System > Package Manager > Available Packages > Search Cron and install it
 2. Then under Services > Cron find "rc.dyndns.update" cron job, click "Edit" and change as below:
