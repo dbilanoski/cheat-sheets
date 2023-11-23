@@ -1,5 +1,38 @@
 # Git Notes
 
+## Caching GitHub's Personal Access Tokens
+
+### Cross-platform
+
+Microsoft provides a cross-platform credential helper named [GCM (Git Credential Manager)](https://github.com/GitCredentialManager/git-credential-manager)
+#### Installation & Configuration (Linux, Debian based)
+Download the latest [.deb package](https://github.com/git-ecosystem/git-credential-manager/releases/latest)*, and run the following:
+
+```shell
+sudo dpkg -i <path-to-package>
+git-credential-manager configure
+```
+
+#### Uninstall
+
+```shell
+git-credential-manager unconfigure
+sudo dpkg -r gcm
+```
+
+
+### Linux 
+
+#### Creating A .netrc File (Not Safe)
+
+Super simple but keeps credentials stored in plain text using a [.netrc file](https://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-file.html).
+
+```bash
+touch ~/.netrc
+echo machine github.com login <login-id> password <token-password> > ~/.netrc
+```
+
+
 ## Delete Commit History But Keep Changes In A Repo
 
 Easiest approach is to create new branch,  add everything to it, delete the old branch and then rename the new one to match the old one.
