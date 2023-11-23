@@ -66,8 +66,7 @@ if((Get-WmiObject Win32_OperatingSystem).Caption -Match "Windows 11") {
 }
 
 # Configure urls, paths and installation arguments
-$source = "https://storage.googleapis.com/wpkg-osijek/OS/Windows11/Win11_23H2_EnglishInternational_x64.zip"
-$destination = "C:\Users\Public\Downloads\Win11_23H2_EnglishInternational_x64.zip"
+$source = "https://your-url-to-zipped-iso\Win11_23H2_EnglishInternational_x64.zip"
 $extract = "C:\temp"
 $setup = "C:\temp\Win11_23H2_EnglishInternational_x64\setup.exe"
 $logsdir = "c:\temp\logs\win11"
