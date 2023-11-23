@@ -183,7 +183,7 @@ Here we are copying and unarchiving tar balled images back to the FOG server.
 	
 2. Once transfer is completed and confirmed to be in the /images folder, open FOG GUI, navigate to "Images", create new image and write parameters to match the original when the image was archived. Previous steps there suggested screenshots which is the best method to avoid mistakes. Name and image path are important.
 
-## Troubleshooting & Issues
+## Issues & Troubleshooting
 
 ### Installation script not working with PHP related errors
 
