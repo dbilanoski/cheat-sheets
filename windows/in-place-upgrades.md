@@ -33,7 +33,7 @@ This will download extracted ISO hosted somewhere, extract it locally on compute
 
   Windows setup.exe cli arguments: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-setup-command-line-options?view=windows-11#skipfinalize
 
-  Exit codes: 1 means Windows 11 is already installed. 2 means issue with downloading or extaction ISO content.
+  Exit codes: 1 means Windows 11 is already installed. 2 means issue with downloading or extaction of ISO content.
 
 .NOTES
 
@@ -68,6 +68,7 @@ powercfg /change disk-timeout-dc 0
 
 # Configure urls, paths and installation arguments
 $source = "https://your-url-to-zipped-iso\Win11_23H2_EnglishInternational_x64.zip"
+$destination = "C:\Users\Public\Downloads"
 $extract = "C:\temp"
 $setup = "C:\temp\Win11_23H2_EnglishInternational_x64\setup.exe"
 $logsdir = "c:\temp\logs\win11"
@@ -116,6 +117,8 @@ This will directly execute extracted ISO contents from a network share to perfor
   Before usage, adjust path and arguments variables according to your environment and needs.
 
   Windows setup.exe cli arguments: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-setup-command-line-options?view=windows-11
+ 
+ Exit codes: 1 means Windows 11 is already installed.
 
 .NOTES
 
@@ -134,7 +137,7 @@ This will directly execute extracted ISO contents from a network share to perfor
 if((Get-WmiObject Win32_OperatingSystem).Caption -Match "Windows 11") {
 
   Write-Error "Computer already on Windows 11."
-  exit 0
+  exit 1
 
 }
 
