@@ -6,13 +6,36 @@
 
 Microsoft provides a cross-platform credential helper named [GCM (Git Credential Manager)](https://github.com/GitCredentialManager/git-credential-manager)
 #### Installation & Configuration (Linux, Debian based)
-Download the latest [.deb package](https://github.com/git-ecosystem/git-credential-manager/releases/latest)*, and run the following:
+Download the latest [.deb package](https://github.com/git-ecosystem/git-credential-manager/releases/latest) and run the following:
 
 ```shell
 sudo dpkg -i <path-to-package>
 git-credential-manager configure
 ```
 
+Then execute this to configure default credential store to be used:
+
+```bash
+git config --global credential.credentialStore gpg
+```
+
+Now install [pass](https://www.passwordstore.org/) as it will be needed to initialize the store:
+
+```bash
+sudo apg install pass
+```
+
+Create a new gpg key pair as it will be also needed during initialization:
+
+```bash
+gpg --gen-key
+```
+
+Initialize the store with pass and newly created key:
+
+```bash
+pass init <gpg-id>
+```
 #### Uninstall
 
 ```shell
