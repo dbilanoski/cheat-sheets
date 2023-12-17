@@ -160,6 +160,9 @@ Start-Process -NoNewWindow -FilePath "$($setup)" -ArgumentList $arguments -Wait
 
 ## Issues & Troubleshooting
 
+Installation and error logs are kept by default in the hidden folder `C:\$Windows.~BT\Sources\Panther`. Scripts above will copy those to the `$logsdir` variable.
+
+Due to the cryptic nature of log entries you might have more success by executing the setup.exe with the graphical interface on problematic computers to see more understandable error message. Just remove `/quiet` argument end execute setup.exe with rest of your arguments.
 ### Script hangs indefinitely on newest ISO files with "Appraiser" or "CONX   aeinv:" errors
 
 On Windows ISO media newer then July 2023. (and December 2023. in the moment of writing), upgrade script might hang indefinitely or get stuck on around 13% if graphical interface was used. 
@@ -188,6 +191,62 @@ Additionally,  **appraiserres.dll** might also hold issues and might need to be
 1.  [Good read on Reddit](https://www.reddit.com/r/SCCM/comments/15tutvf/in_place_upgrade_hanging_recent/)
 2. [Another good read on Reddit](https://www.reddit.com/r/SCCM/comments/17pxxvv/23h2_inplace_upgrade_stuck_at_14/)
 3. [One more Reddit read just for a good measure](https://www.reddit.com/r/techsupport/comments/17c7ypq/windows_11_deployment_error_amiutilityreggetvalue/)
+
+
+### "We couldn't update the system reserved partition" Error
+
+Executing setup.exe with GUI returns this error on the beginning of the procedure or the installer might exit with error code 0xc1900104, or error code 0x800f0922, or in logs, you might see something like this:
+
+```text
+2023-12-17 16:24:55, Error                 CONX   Appraiser: ERROR,SdbpGetManifestedMergeStubAlloc,1017,SdbpGetMergeSdbsDisabled failed [c0000034]
+
+2023-12-17 16:25:02, Error                 MOUPG  CSetupResponseTemplate<class IDlpResponse>::OnCancel(238): Result = 0x800704C7
+2023-12-17 16:25:02, Error                 MOUPG  CSetupResponseTemplate<class IDlpResponse>::ExecuteRoutine(143): Result = 0x800704C7
+2023-12-17 16:25:02, Error                 MOUPG  CDlpResponseImpl<class CDlpErrorImpl<class CDlpObjectInternalImpl<class CUnknownImpl<class IDlpResponse> > > >::Execute(1923): Result = 0x800704C7
+2023-12-17 16:25:02, Error                 MOUPG  CDlpActionImpl<class CDlpErrorImpl<class CDlpObjectInternalImpl<class CUnknownImpl<class ICompatAction> > > >::ExecuteResponse(1365): Result = 0x800704C7
+2023-12-17 16:25:02, Error                 MOUPG  CDlpActionCompat::ExecuteSysReqScan(809): Result = 0xC1900201
+2023-12-17 16:25:02, Error                 MOUPG  CDlpActionCompat::ExecuteRoutine(638): Result = 0xC1900201
+2023-12-17 16:25:02, Error                 MOUPG  CDlpActionImpl<class CDlpErrorImpl<class CDlpObjectInternalImpl<class CUnknownImpl<class ICompatAction> > > >::Execute(493): Result = 0xC1900201
+2023-12-17 16:25:02, Error                 MOUPG  CDlpTask::ExecuteAction(3300): Result = 0xC1900201
+2023-12-17 16:25:02, Error                 MOUPG  CDlpTask::ExecuteActions(3454): Result = 0xC1900201
+2023-12-17 16:25:02, Error                 MOUPG  CDlpTask::Execute(1631): Result = 0xC1900201
+```
+
+This can mean one of two things - the System Reserved Partition (SRP) may be full or might be running with underlying issues. The System Reserve Partition (SRP) is a small partition on your hard drive that stores boot information for Windows.
+
+#### Solution
+
+1. Check if your SRP partition is full, and what kind of partition is it (MBR or GPT).
+   
+   Elevated CMD > diskmgmt.exe > Right click the disk where the OS is located > Select "Properties" > Click "Volumes" tab > Check "Partition Style" (MBR or GPT) and take a note of it
+
+2. Back in the Disk Management, find "EFI System Partition" if GPT partition style, if MBR, then it might be called "System Reserved". Confirm if it's full or nearly full. Installation procedure will need around 15 MB of free space.
+   
+3. Now we free some space. **Be extra cautions what you delete here** as you can mess the boot procedure and end up with non-bootable computer.  First mount the SRP partition and assign it a letter so it can be accessed:
+   ```cmd
+   mountvol y: /s
+	```
+
+4. Then navigate to the Fonts directory as that one is never used and safe to delete and delete contents of it.
+   ```cmd
+   cd y:
+   cd EFI\Microsoft\Boot\Fonts
+   del *.*
+	```
+	Confirm the deletion. 
+
+5. Check disk space and try running installation again.
+   ```cmd
+   dir y:
+	```
+
+In case there is less than 15 MB free, you can try deleting unused language directories under `Y:\EFI\Microsoft\Boot` but at this point, clean installation might be better approach.
+
+```cmd
+cd y:
+cd EFI\Microsoft\Boot\Fonts
+rmdir /s /q da-DK el-GR es-ES es-MX et-EE fi-FI fr-CA fr-FR hu-HU it-IT ja-JP ko-KR lt-LT lv-LV nb-NO nl-NL pl-PL pt-PT rp-RO ru-RU sk-SK sl-SI sv-SE tr-TR zh-CN
+```
 
 ## References
 
