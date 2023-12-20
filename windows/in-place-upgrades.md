@@ -7,7 +7,7 @@ aliases:
 
 # In-place Upgrade Scripts
 
-Here we are looking at upgrading Windows to next version (11 in this case) by using locally prepared ISO file/content to upgrade computers remotely and silently while keeping user data and computer  configuration.
+Here we are looking at upgrading Windows to next version (11 in this case) by using locally prepared ISO content to upgrade computers remotely and silently while keeping user data and computer  configuration.
 
 Approaches which might show up in the script examples:
 * Mounting Windows 11 ISO file from a network share
@@ -63,8 +63,6 @@ powercfg /change hibernate-timeout-ac 0
 powercfg /change hibernate-timeout-ac 0
 powercfg /change disk-timeout-ac 0
 powercfg /change disk-timeout-dc 0
-
-
 
 # Configure urls, paths and installation arguments
 $source = "https://your-url-to-zipped-iso\Win11_23H2_EnglishInternational_x64.zip"
@@ -141,13 +139,13 @@ if((Get-WmiObject Win32_OperatingSystem).Caption -Match "Windows 11") {
 
 }
 
-# Set standby and hibernate timers to 0
-powercfg /change standby-timeout-ac 0
-powercfg /change standby-timeout-dc 0
-powercfg /change hibernate-timeout-ac 0
-powercfg /change hibernate-timeout-ac 0
-powercfg /change disk-timeout-ac 0
-powercfg /change disk-timeout-dc 0
+# Set standby and hibernate timers to 0 (Uncomment if needed)
+# powercfg /change standby-timeout-ac 0
+# powercfg /change standby-timeout-dc 0
+# powercfg /change hibernate-timeout-ac 0
+# powercfg /change hibernate-timeout-ac 0
+# powercfg /change disk-timeout-ac 0
+# powercfg /change disk-timeout-dc 0
 
 # Configure paths and installation arguments
 $setup = "\\your-path-to-extracted-setup\setup.exe"
@@ -188,6 +186,7 @@ Highest working version of acmigration.dll is: 10.0.22621.1986
 Additionally,  **appraiserres.dll** might also hold issues and might need to be replaced but I did not encounter it.
 
 #### References
+
 1.  [Good read on Reddit](https://www.reddit.com/r/SCCM/comments/15tutvf/in_place_upgrade_hanging_recent/)
 2. [Another good read on Reddit](https://www.reddit.com/r/SCCM/comments/17pxxvv/23h2_inplace_upgrade_stuck_at_14/)
 3. [One more Reddit read just for a good measure](https://www.reddit.com/r/techsupport/comments/17c7ypq/windows_11_deployment_error_amiutilityreggetvalue/)
@@ -244,7 +243,7 @@ In case there is less than 15 MB free, you can try deleting unused language dire
 
 ```cmd
 cd y:
-cd EFI\Microsoft\Boot\Fonts
+cd EFI\Microsoft\Boot
 rmdir /s /q da-DK el-GR es-ES es-MX et-EE fi-FI fr-CA fr-FR hu-HU it-IT ja-JP ko-KR lt-LT lv-LV nb-NO nl-NL pl-PL pt-PT rp-RO ru-RU sk-SK sl-SI sv-SE tr-TR zh-CN
 ```
 

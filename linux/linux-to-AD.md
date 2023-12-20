@@ -1,7 +1,6 @@
 ---
 alias: ad, "active directory"
 ---
-
 # Integrating Linux to Active Directory
 
 Ubuntu server will be used as an example but the procedure can be applied to other distros. In this approach, we are counting to use samba shares with AD authentication which is why some additional packages are installed and configured.
