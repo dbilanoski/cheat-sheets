@@ -192,6 +192,26 @@ Additionally,  **appraiserres.dll** might also hold issues and might need to be
 3. [One more Reddit read just for a good measure](https://www.reddit.com/r/techsupport/comments/17c7ypq/windows_11_deployment_error_amiutilityreggetvalue/)
 
 
+### "Error MOUPG  MigChoice: Selected install choice is not available" Error
+
+Script exits in the first minute of the procedure and setuperr.log will hold this one:
+
+```text
+2023-12-21 14:32:48, Error                 MOUPG  MigChoice: Selected install choice is not available.
+```
+
+In case you executed graphical interface, it will ask you how to handle user data and installed applications with option to "Keep installed applications" greyed out. This is because the language of the installer package does not correspond to the installed computer UI language.
+
+#### Solution
+
+Either download ISO with language you already use on computers or [[languages-keyboard-layouts|install language]] of the ISO you already have. To install the language, use this script (needs reboot):
+
+```powershell
+Install-language en-GB -CopyToSettings
+Set-WinSystemLocale en-GB
+Set-WinUserLanguageList en-GB -Force
+# shutdown /r /f /t 60 # For reboot scheduling
+```
 ### "We couldn't update the system reserved partition" Error
 
 Executing setup.exe with GUI returns this error on the beginning of the procedure or the installer might exit with error code 0xc1900104, or error code 0x800f0922, or in logs, you might see something like this:
@@ -246,6 +266,7 @@ cd y:
 cd EFI\Microsoft\Boot
 rmdir /s /q da-DK el-GR es-ES es-MX et-EE fi-FI fr-CA fr-FR hu-HU it-IT ja-JP ko-KR lt-LT lv-LV nb-NO nl-NL pl-PL pt-PT rp-RO ru-RU sk-SK sl-SI sv-SE tr-TR zh-CN
 ```
+
 
 ## References
 
