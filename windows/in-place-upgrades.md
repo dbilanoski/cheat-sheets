@@ -18,7 +18,7 @@ Approaches which might show up in the script examples:
 
 ## Scripts
 
-### Off-site upgrade with extracted ISO
+### Basic Off-site upgrade with extracted ISO
 
 This will download extracted ISO hosted somewhere, extract it locally on computer and then execute the upgrade procedure.
 
@@ -61,8 +61,6 @@ powercfg /change standby-timeout-ac 0
 powercfg /change standby-timeout-dc 0
 powercfg /change hibernate-timeout-ac 0
 powercfg /change hibernate-timeout-ac 0
-powercfg /change disk-timeout-ac 0
-powercfg /change disk-timeout-dc 0
 
 # Configure urls, paths and installation arguments
 $source = "https://your-url-to-zipped-iso\Win11_23H2_EnglishInternational_x64.zip"
@@ -70,6 +68,7 @@ $destination = "C:\Users\Public\Downloads"
 $extract = "C:\temp"
 $setup = "C:\temp\Win11_23H2_EnglishInternational_x64\setup.exe"
 $logsdir = "c:\temp\logs\win11"
+# Add /noreboot if you want to leave first reboot to the user
 $arguments = "/Auto Upgrade /Quiet /migratedrivers all /ShowOOBE none /Compat IgnoreWarning /Telemetry Disable /DynamicUpdate disable /eula accept /BitLocker AlwaysSuspend /copylogs $logsdir"
 
 # Download ISO package
@@ -101,7 +100,7 @@ if(Test-Path -Path $setup) {
 ```
 
 
-### On-site upgrade with extracted ISO
+### Basic On-site upgrade with extracted ISO
 
 This will directly execute extracted ISO contents from a network share to perform an upgrade. Suitable for on-site computers where network shares are available over high-speed internal links. Alternatively, content can be first downloaded to each machine before execution.
 
@@ -150,12 +149,100 @@ if((Get-WmiObject Win32_OperatingSystem).Caption -Match "Windows 11") {
 # Configure paths and installation arguments
 $setup = "\\your-path-to-extracted-setup\setup.exe"
 $logsdir = "c:\temp\logs\win11"
+# Add /noreboot if you want to leave first reboot to the user
 $arguments = "/Auto Upgrade /Quiet /migratedrivers all /ShowOOBE none /Compat IgnoreWarning /Telemetry Disable /DynamicUpdate disable /eula accept /BitLocker AlwaysSuspend /copylogs $logsdir"
 
 # Execute installer
 Start-Process -NoNewWindow -FilePath "$($setup)" -ArgumentList $arguments -Wait
 ```
 
+### Useful additions you might need 
+
+Additional configuration you might need in your scripts for better automatization and coverage.
+
+#### Set standby and hibernate timers to 0
+
+```powershell
+powercfg /change standby-timeout-ac 0
+powercfg /change standby-timeout-dc 0
+powercfg /change hibernate-timeout-ac 0
+powercfg /change hibernate-timeout-ac 0
+powercfg /change disk-timeout-ac 0
+powercfg /change disk-timeout-dc 0
+```
+
+#### Filter targets by computer model to exclude unsupported computers
+
+```powershell
+# Filter targets by computer models to exclude unsupported computers
+$unsupported_models = @("HP ProDesk 600 G3 SFF","HP EliteDesk 800 G2 SFF")
+$current_model = (Get-CimInstance -ClassName Win32_ComputerSystem).Model
+
+if($current_model -in $unsupported_models) {
+  Write-Error "Computer model: $computer_model. Windows 11 not supported here."
+  exit
+}
+```
+
+#### Disable / Bypass internal WSUS
+```powershell
+# Disable internal update server usage
+Set-ItemProperty -Path "HKLM:Software\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "UseWUServer" -Value 0
+Restart-Service -Name wuauserv -Force
+
+# Set optional features to be downloaded from Windows Update so language download becomes accessible (might not be necesarry if "Disable internal update server usage" from earlier worked)
+
+if(-not(Test-Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\Servicing"){   New-Item -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\Servicing"
+}
+New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\Servicing" -Name "RepairContentServerSource" -Value 2
+
+```
+
+#### Stop Symantec Endpoint Protection service
+
+```powershell
+Start-Process -FilePath (Resolve-Path -Path 'C:\Program Files\Symantec\Symantec Endpoint Protection\14.3.*\Bin64\Smc.exe')[-1].path -ArgumentList '-stop -p Tr4nsc0m123!' -NoNewWindow -Wait
+```
+
+#### Check and install languages
+```powershell
+# Say we want en-GB to be used as we deploy that ISO. In case it's not there, here's how to fix it while preseving user's current keyboard layout
+
+$languages = Get-WinUserLanguageList
+$keyboardLayout = $languages[0].InputMethodTips.split(":")
+
+if (-Not ($languages[0].LanguageTag -eq "en-GB")) {
+  # Get all installed langs in an workable array
+  [string[]]$langs = (get-winuserlanguagelist).LanguageTag
+
+  # Check if en-GB is already installed
+  if (-not ("en-GB" -in $langs)) {
+
+    # Set optional features to be downloaded from Windows Update so language download becomes accessible
+    if(-not(Test-Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\Servicing")) {
+      New-Item -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\Servicing"
+    }
+    New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\Servicing" -Name "RepairContentServerSource" -Value 2
+
+    # Install language and update user language list
+    Install-language en-GB -CopyToSettings
+    Set-WinUserLanguageList en-GB -Force
+    $languages = Get-WinUserLanguageList
+  }
+
+  # Configure language and keybord layout
+  Set-WinSystemLocale en-GB
+  # Clear existing keyboard layouts (just in case)
+  $languages[0].InputMethodTips.Clear()
+  # Add previously configured keyboard layout to new language
+  $languages[0].InputMethodTips.Add("0809:$($keyboardLayout)")
+  Set-WinUserLanguageList en-GB -Force
+  # Schedule reboot
+  shutdown /r /f /t 60
+  Write-Error "Switching to en-GB language and rebooting the computer."
+  Exit
+}
+```
 ## Issues & Troubleshooting
 
 Installation and error logs are kept by default in the hidden folder `C:\$Windows.~BT\Sources\Panther`. Scripts above will copy those to the `$logsdir` variable.
@@ -192,7 +279,7 @@ Additionally,  **appraiserres.dll** might also hold issues and might need to be
 3. [One more Reddit read just for a good measure](https://www.reddit.com/r/techsupport/comments/17c7ypq/windows_11_deployment_error_amiutilityreggetvalue/)
 
 
-### "Error MOUPG  MigChoice: Selected install choice is not available" Error
+### "MigChoice: Selected install choice is not available" Error
 
 Script exits in the first minute of the procedure and setuperr.log will hold this one:
 
