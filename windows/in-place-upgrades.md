@@ -195,12 +195,14 @@ Restart-Service -Name wuauserv -Force
 if(-not(Test-Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\Servicing"){   New-Item -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\Servicing"
 }
 New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\Servicing" -Name "RepairContentServerSource" -Value 2
+Restart-Service -Name wuauserv -Force
 
 ```
 
 #### Stop Symantec Endpoint Protection service
 
 ```powershell
+# This will autoresolve path regardless of the build number inside 14.3 version. Adjust this number for your environment
 Start-Process -FilePath (Resolve-Path -Path 'C:\Program Files\Symantec\Symantec Endpoint Protection\14.3.*\Bin64\Smc.exe')[-1].path -ArgumentList '-stop -p Tr4nsc0m123!' -NoNewWindow -Wait
 ```
 
@@ -223,6 +225,7 @@ if (-Not ($languages[0].LanguageTag -eq "en-GB")) {
       New-Item -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\Servicing"
     }
     New-ItemProperty -Path "HKLM:Software\Microsoft\Windows\CurrentVersion\Policies\Servicing" -Name "RepairContentServerSource" -Value 2
+    Restart-Service -Name wuauserv -Force
 
     # Install language and update user language list
     Install-language en-GB -CopyToSettings
@@ -236,7 +239,7 @@ if (-Not ($languages[0].LanguageTag -eq "en-GB")) {
   $languages[0].InputMethodTips.Clear()
   # Add previously configured keyboard layout to new language
   $languages[0].InputMethodTips.Add("0809:$($keyboardLayout)")
-  Set-WinUserLanguageList en-GB -Force
+  Set-WinUserLanguageList $languages -Force
   # Schedule reboot
   shutdown /r /f /t 60
   Write-Error "Switching to en-GB language and rebooting the computer."
