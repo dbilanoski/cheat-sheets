@@ -10,7 +10,7 @@ FOG project is a free open-source network computer cloning and management soluti
 
 Official documentation [here](https://docs.fogproject.org/en/latest/).
 
-Prior to installing the FOG project, make sure to have the Linux box updated and configured with **static IP address** and other parameters specific to your environment.
+Prior to installing the FOG project, make sure to have the Linux box updated and configured with [[setting-static-ip-address|static IP address]] and other parameters specific to your environment.
 
 Also, if you are using external DHCP service, make sure that scope options 066 and 067 are configured as explained [here](https://docs.fogproject.org/en/latest/installation/network_setup.html)
 
@@ -58,8 +58,8 @@ cd /path/to/fogproject-dev-branch/bin
 sudo ./installfog.sh
 ```
 
-3. Follow the textual configurator and insert desired values. Instalation options are described [here](https://docs.fogproject.org/en/latest/installation/install_fog_server.html)
-4. At some point, you will be directed to access the web gui to start the database installation do  that and follow the on-screen instructions. You will be prompted  to configure database password.
+3. Follow the textual configurator and insert desired values. Installation options are described [here](https://docs.fogproject.org/en/latest/installation/install_fog_server.html)
+4. At some point, you will be directed to access the web GUI to start the database installation - do  that and follow the on-screen instructions. You will be prompted  to configure database password.
 
 On completion, you will be able to access your FOG server via http://your-fog-ip-address/fog/management.
 
@@ -70,7 +70,7 @@ FOG can act as a DHCP service. In case external DHCP server will be used, two sc
 
 #### Option 66 
 
-Also called "Boot server" or "TFTP server", set it to the ip address of the FOG server.
+Also called "Boot server" or "TFTP server", set it to the IP address of the FOG server.
 
 #### Option 67
 
@@ -89,8 +89,8 @@ In mixed vendor environment, it's best to maintain FOG images per computer model
 ### Procedure order
 
 1. Perform host registration to the FOG server
-2. Sysprep the host os with the shutdown option
-3. Create the image in the FOG web GUI and associate it with previosly registered host
+2. [[sysprep-procedures|sysprep]] the host OS with the shutdown option
+3. Create the image in the FOG web GUI and associate it with previously registered host
 4. Schedule the capturing task in the FOG web GUI on previously registered host
 	1. Schedule the task from the "Hosts" menu on the host itself so you get the option to remove "Wake on LAN" as that one will turn on the host automatically.
 5. Execute network boot and the capturing will start automatically
@@ -104,9 +104,9 @@ Images can be deployed either as a standalone task  without host registration or
 Detailed instructions available in the [official documentation](https://docs.fogproject.org/en/latest/getting_started/deploy_an_image.html).
 
 
-## Transfering and archiving images
+## Transferring and archiving images
 
-### Transfering single/multiple images to new server
+### Transferring single/multiple images to new server
 
 1. In the FOG web GUI, locate the image you are going to copy to a new server and document/screenshot the image settings
 2. Copy image you want from old to new server
@@ -118,7 +118,7 @@ Detailed instructions available in the [official documentation](https://docs.fog
 	   
 3. On the new server, in FOG web GUI, create new image and make sure that the *name* and the *path* are according to the copied image. If you did not change anything, screenshot from the old server can be used letter by letter.
 
-### Transfering all images to new server
+### Transferring all images to new server
 
 1. Delete images you do not need (both in /images folder and via FOG web page GUI)
 2. Export image list from FOG web page GUI (Images > export) and save it as a .csv file
@@ -146,7 +146,7 @@ Here we are pulling FOG images from the remote FOG server to our local repositor
    
 2.  Make sure you document each image settings, best with screenshot from the FOG web GUI on the server you are getting image from
     
-3.  Open CMD as administrator / bash with sudo then run this command:  
+3.  Open CMD as administrator / bash with `sudo` then run this command:  
       
     ```bash
     Ssh your-username@fog-server-ip-address tar czvf - /images/image-folder-name > C:\desired-folder-on-your-local-machine\image-folder-name.tar.gz  
