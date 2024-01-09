@@ -46,6 +46,10 @@ Under Additional Rules, create New Path rule and configure as follows:
 * Path: C:\\Windows\\System32\\notepad.exe
 * Security Level: Disallowed 
 
+**Notepad in Windows 11**
+* Path: %PROGRAMFILES%\\WindowsApps\\Microsoft.WindowsNotepad_*
+* Security Level: Disallowed
+
 **Wordpad**
 
 * Path: %PROGRAMFILES%\\Windows NT\\Accessories\\wordpad.exe
