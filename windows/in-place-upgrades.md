@@ -203,7 +203,7 @@ Restart-Service -Name wuauserv -Force
 
 ```powershell
 # This will autoresolve path regardless of the build number inside 14.3 version. Adjust this number for your environment
-Start-Process -FilePath (Resolve-Path -Path 'C:\Program Files\Symantec\Symantec Endpoint Protection\14.3.*\Bin64\Smc.exe')[-1].path -ArgumentList '-stop -p Tr4nsc0m123!' -NoNewWindow -Wait
+Start-Process -FilePath (Resolve-Path -Path 'C:\Program Files\Symantec\Symantec Endpoint Protection\14.3.*\Bin64\Smc.exe')[-1].path -ArgumentList '-stop -p your-password' -NoNewWindow -Wait
 ```
 
 #### Check and install languages
