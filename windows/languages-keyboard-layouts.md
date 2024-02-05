@@ -100,6 +100,7 @@ Install new language and set it to be used (needs reboot).
 Install-language en-GB -CopyToSettings
 Set-WinSystemLocale en-GB
 Set-WinUserLanguageList en-GB -Force
+Set-SystemPreferredUILanguage -Language en-GB
 ```
 
 
