@@ -76,7 +76,7 @@ Get-GPResultantSetOfPolicy -ReportType Xml -Path "c:\reports\LocalUserAndCompute
 Generate a report for the specified remote computer and user and save it as HTML file
 
 ```powershell
-Get-GPResultantSetOfPolicy -ReportType HTML -Path "c:\reports\LocalUserAndComputerReport.xml" -Computer remoteComputerName.domain.com -User domainName\userName
+Get-GPResultantSetOfPolicy -ReportType HTML -Path "c:\reports\LocalUserAndComputerReport.html" -Computer remoteComputerName.domain.com -User domainName\userName
 ```
 
 Generate a report for the specified remote computer and user in HTML format and save it to the specified file
