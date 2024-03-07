@@ -7,11 +7,9 @@ PowerShell can create symbolic links, but not shortcuts natively.
 New-Item -ItemType SymbolicLink -Path "C:\example-link.lnk" -Target "C:\Users\dbilanoski\Documents\some-text.txt"
 ```
 
-## Symbolic Links Or Shortcuts
+## Symbolic Links And Shortcuts
 
-Symbolic links are direct file system links (interpreted by the file system), lacking size and automatic updating, while shortcuts are regular files with paths interpreted by the Windows UI. Shortcuts offer advantages like automatic updates, diverse target types, and configurable icons, making them user-friendly. However, creating shortcuts in PowerShell involves tapping into shell methods, adding complexity to the process
-  
-[Symbolic links](https://en.wikipedia.org/wiki/Symbolic_link) directly link to files, interpreted by the file system, lacking size and automatic updating. Shortcuts are regular files with paths interpreted by the Windows UI and update target paths if moved. 
+[Symbolic links](https://en.wikipedia.org/wiki/Symbolic_link) are direct file system links (interpreted by the file system) while shortcuts are regular files with paths interpreted by the Windows UI.
 
 When needing a Windows shortcut, choose it over a symlink for several reasons:
 
@@ -22,7 +20,7 @@ When needing a Windows shortcut, choose it over a symlink for several reasons:
 
 ## Creating Shortcuts
 
-To create shortcuts with PowerShell, a [COM](https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal) object will be needed to instantiate the [WScript.Shell](https://learn.microsoft.com/en-us/previous-versions//aew9yb99(v=vs.85)) class which will bring the needed method for this.
+To create shortcuts using PowerShell, you'll need a  [COM](https://learn.microsoft.com/en-us/windows/win32/com/component-object-model--com--portal)object to instantiate the [WScript.Shell](https://learn.microsoft.com/en-us/previous-versions//aew9yb99(v=vs.85)) class, which provides the necessary methods for this task.
 
 ### Basic Example
 
@@ -47,7 +45,7 @@ powershell -ExecutionPolicy Bypass -Command "$ws = New-Object -ComObject WScript
 ```
 
 ### Specific Examples
-How to configure target paths and arguments when accessing different objects.
+How to configure target paths and arguments when accessing different target types.
 
 ```powershell
 # Targeting a file  
