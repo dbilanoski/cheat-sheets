@@ -302,3 +302,15 @@ Create registry key:
 Computer configuration > Policies > Administrative templates > Windows Components/File Explorer
   
 * Set "Default Associations Configuration File" to "Enabled" poining to \\\\your-domain-sysvol-share-where-your-file-is-hosted\\AppAssociation.xml"
+
+
+## Disable Windows On-screen Keyboard
+
+In your computer configuration GPO:
+
+Computer Configuration > Policies > Local Policies/Security Options > Software Restriction Policies
+
+Under Additional Rules, create New Path Rule and configure as follows:
+
+* Path: %WINDIR%\\System 32\\osk.exe
+* Security Level: Disallowed 
