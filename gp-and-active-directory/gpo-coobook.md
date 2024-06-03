@@ -314,3 +314,30 @@ Under Additional Rules, create New Path Rule and configure as follows:
 
 * Path: %WINDIR%\\System 32\\osk.exe
 * Security Level: Disallowed 
+
+## Configure SMB Signing
+
+In your computer configuration GPO, set it both for client and server role.
+
+Computer Configuration > Policies > Local Policies/Security Options > Microsoft Network Client
+
+1. Set "Microsoft network client: Digitally sign communications (always)" as **Enabled**
+	1. Reqistry equivalent: `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\LanManWorkstation\Parameters:RequireSecuritySignature = 1`
+	   
+2. Legacy option for pre SMBv2 usage (**optional**)
+   Set "Microsoft network client: Digitally sign communications (if server agrees)" as **Enabled**
+	1. Registry equivalent: `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\LanManWorkstation\Parameters:EnableSecuritySignature = 1`
+
+Computer Configuration > Policies > Local Policies/Security Options > Microsoft Network Server
+
+1. Set "Microsoft network server: Digitally sign communications (always)" as **Enabled**
+	1. Registry equivalent: `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\LanManServer\Parameters:RequireSecuritySignature = 1`
+	   
+2. Legacy option for pre SMBv2 usage (**optional**)
+   Set "Microsoft network server: Digitally sign communications (if client agrees)" as **Enabled**
+	1. Registry equivalent: `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\LanManServer\Parameters:EnableSecuritySignature = 1`
+
+
+### Resources
+
+1. Good read about differences between "always" and "if server agrees" in corelation with different SMB version [here](https://techcommunity.microsoft.com/t5/storage-at-microsoft/configure-smb-signing-with-confidence/ba-p/2418102).
