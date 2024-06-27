@@ -6,49 +6,49 @@ It's commands are mainly categorized into five categories, besides which there a
 
 **Mental Map Of SQL**
 
-![](sql-mindmap.jpg)
+![](assets/sql-mindmap.jpg)
 
 ## Table of Content
 
-1. [**DDL** – Data Definition Language](#Data-Definition-Language-(DDL))
+1. [Data Definition Language (DDL)](#Data%20Definition%20Language%20(DDL))
 	1. [CREATE](##Create)
 	2. [ALTER](##Alter)
 	3. [DROP](##Drop)
 	4. [RENAME](##Rename)
-3. [**DQL** – Data Query Language](##Data-Query-Language-(DQL))
-4. [**DML** – Data Manipulation Language](#Data-Manipulation-Language-(DML))
+3. [Data Query Language (DQL)](#Data%20Query%20Language%20(DQL))
+4. [Data Manipulation Language (DML)](#Data%20Manipulation%20Language%20(DML))
 	1. [INSERT](##INSERT)
 	2. [UPDATE](##UPDATE)
 	3. [DELETE](##DELETE)
 	4. [TRUNCATE TABLE](#TRUNCATE-TABLE)
-6. **DCL** – Data Control Language
+5. [Data Control Language (DCL)](#Data%20Control%20Language%20(DCL))
 	1. [GRANT](##GRANT)
 	2. [DENY](##DENY)
 	3. [REVOKE](##REVOKE)
-7. [**TCL** – Transaction Control Language](#Transaction-Control-Language-(TCL))
+6. [Transaction Control Language (TCL)](#Transaction%20Control%20Language%20(TCL))
 	1. [BEGIN TRANSACTION](#BEGIN-TRANSACTION)
 	2. [COMMIT](#COMMIT)
 	3. [ROLLBACK](#ROLLBACK)
-8. [Querying & Order Of Execution](#Querying-&-Order-Of Execution)
-9. [Subqueries](##Subqueries)
-10. [Joins & Correlation](##Joins-&-Correlation)
+7. [Querying & Order Of Execution](#Querying%20&%20Order%20Of%20Execution)
+8. [Subqueries](##Subqueries)
+9. [Joins & Correlation](#Joins%20&%20Correlation)
 	1. [Set Operators](#Set-Operators)
 		1. [Union](##Union)
 		2. [Except](#Except)
 		3. [Intersect](#Intersect)
 	2. [Joins](##Joins)
 		1. [Self Joins](#Self-Joins)
-11. Common Table Expressions (CTEs or WITH Clauses) 
-12. Data Types
-13. Operators
-14. Functions
-15. [Window Functions]("Window-Functions))
+10. Common Table Expressions (CTEs or WITH Clauses) 
+11. Data Types
+12. Operators
+13. Functions
+14. [Window Functions](#Window-Functions)
 	1. [Syntax](##Syntax)
 	2. [Aggregate Window Functions](#Aggregate-Window-Functions)
 	3. [Rank Window Functions](#Rank-Window-Functions)
 	4. [Examples](##Examples)
-16. Procedures
-17. Triggers
+15. Procedures
+16. Triggers
 
 ## Data Definition Language (DDL)
 SQL commands used to create data holding objects, such as tables, views, triggers or functions. They deal with defining the database schema, working with structure, not data.
