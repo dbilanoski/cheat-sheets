@@ -16,6 +16,12 @@ It's commands are mainly categorized into five categories, besides which there a
 	3. [DROP](##Drop)
 	4. [RENAME](##Rename)
 3. [Data Query Language (DQL)](#Data%20Query%20Language%20(DQL))
+	1. [SELECT](#SELECT)
+		1. [FROM](#FROM)
+		2. [WHERE](#WHERE)
+		3. [GROUP BY](#GROUP%20BY)
+		4. [HAVING](#HAVING)
+		5. [ORDER BY](#ORDER%20BY)
 4. [Data Manipulation Language (DML)](#Data%20Manipulation%20Language%20(DML))
 	1. [INSERT](##INSERT)
 	2. [UPDATE](##UPDATE)
@@ -40,8 +46,11 @@ It's commands are mainly categorized into five categories, besides which there a
 		1. [Self Joins](#Self-Joins)
 10. Common Table Expressions (CTEs or WITH Clauses) 
 11. Data Types
-12. Operators
-13. Functions
+12. [Operators](#Operators)
+	1. [Comparison Operators](#Comparison%20Operators)
+	2. [Logical Operators](#Logical%20Operators)
+	3. [Arithmetic Operators](#Arithmetic%20Operators)
+13. [Functions](#Functions)
 14. [Window Functions](#Window-Functions)
 	1. [Syntax](##Syntax)
 	2. [Aggregate Window Functions](#Aggregate-Window-Functions)
@@ -123,6 +132,181 @@ SQL commands used to perform queries on the data within the database, mainly the
 
 `SELECT` if often considered part of the Data Modification Language making the DQL category obsolete, but it's [argued](https://en.wikipedia.org/wiki/Data_query_language) that only when adding FROM or WHERE data manipulators to the SELECT statement the statement is then considered part of the DML.
 
+### SELECT
+
+Retrieves rows from the database and enables the selection of one or many rows or columns from one or many tables in a database. It has complex syntax, but main clauses can be summarized as:
+
+SELECT [UNIQUE] column_list [ INTO new_table ]
+[ FROM table_source ]  [ WHERE search_condition ]
+[ GROUP BY group_by_expression ]
+[ HAVING search_condition ]
+[ WINDOW window expression]
+[ ORDER BY order_expression [ ASC | DESC ]]
+
+where most of the clauses are optional and can be used to further define result set or filter the source data set. The [Set Operators](#Set-Operators) can be used between queries to combine or compare their results into one result set.
+
+**Query Examples**
+```sql
+-- PostgreSQL dialect
+-- Select everything from table "tbl_customers"
+SELECT * FROM tbl_customer;
+
+-- Select columns customer_id and customer_name from table "tbl_customers" for first 20 customer_ids
+SELECT customer_id, customer_name
+FROM tbl_customers
+WHERE customer_id <= 20;
+```
+
+As a statement, it can have **6 clauses** which are we write in this order:
+
+1. SELECT
+2. FROM
+3. WHERE
+4. GROUP BY
+5. HAVING
+6. ORDER BY
+
+> [!Logic as a sentence to understand the query syntax order:]
+> 
+> `SELECT` some columns `FROM` some tables (or more if we are to do joins) `WHERE` some condition is satisfied. In case I need to `GROUP BY` data to change result set showing aggregated data based on some common value, I can additionaly filter that grouped data with `HAVING` and finally sort the end result set using `ORDER BY`.
+
+#### FROM
+
+It's used to specify the source to fetch the data from.
+* Source can be a table, view or CTE. 
+* It's usually required on the SELECT statement except when SELECT is written without columns, only with literals or arithmetic expressions.
+
+Syntax wise, we also chain the [Joins](#Joins) here if used, as shown in the basic syntax below.
+
+```sql
+-- Following the SELECT declaration
+FROM table1
+[ { INNER JOIN
+  | LEFT [OUTER] JOIN
+  | RIGHT [OUTER] JOIN
+  | FULL [OUTER] JOIN } table2
+ON table1.column1 = table2.column1 ]
+```
+
+#### WHERE
+
+It filters a result set to include only records that fulfill a specified condition.
+* It's also used in [Data Manipulation Language (DML)](#Data%20Manipulation%20Language%20(DML)) commands.
+* It uses [Logical Operators](#Logical%20Operators) and [Comparison Operators](#Comparison%20Operators) to define conditions.
+
+**Examples**
+
+```sql
+-- PostgreSQL dialect
+-- Select columns first_name and age from table "tbl_employees" for customers between age of 25 and 30
+SELECT first_name, age
+FROM tbl_employees
+WHERE age BETWEEN 25 AND 30;
+
+-- Select all customers which first name starts with letter D and last name is not "Phillips"
+SELECT *
+FROM tbl_employees
+WHERE 
+	first_name LIKE 'D%' 
+	AND 
+	last_name != 'Phillips';
+
+-- Select all customers who are not from states DE, SI and HR
+SELECT *
+FROM tbl_employees
+WHERE state NOT IN ('DE', 'SI', 'HR);
+```
+
+#### GROUP BY
+
+It groups rows that have the same values into summary rows by using aggregate functions producing results like in "find the number of customers in each country" logic.
+* When `GROUP BY` is used, `SELECT` can only have columns which are in the grouping expression or columns enclosed in an aggregate function, since only those are guaranteed to have the same value for all the rows within a group (point of grouping).
+* Grouped values can be filtered with `HAVING`.
+
+**Examples**
+```sql
+-- PostgreSQL dialect
+-- How many active employees with age of 50 are in the table tbl_employee?
+SELECT COUNT(*) AS employee_count
+FROM tbl_employees
+WHERE 
+	age = 50
+	AND
+	status = 'active';
+	
+/* RESULT:
+employee_has_50
+12
+*/
+
+-- Show how many employees are working in each state
+SELECT state, COUNT(customer_id) AS employee_count
+FROM tbl_employees
+GROUP BY state;
+
+/* RESULT:
+state  employee_count
+HR     22
+SI     2
+DE     16
+IT     55
+*/
+
+-- Show how many employees are working in each state and city
+SELECT state, city, COUNT(customer_id) AS employee_cont
+FROM tbl_employees
+GROUP BY state, city;
+
+/* RESULT:
+state  city        employee_count
+HR     Osijek      10
+HR     Zagreb      12
+SI     Maribor     2
+DE     Essen       10
+DE     Berlin      6
+IT     Rome        30
+IT     Milano      25
+*/
+```
+
+#### HAVING
+
+It's used to filter the result set based on aggregate functions.
+* Similar to `WHERE`, but for grouped data produced by the `GROUP BY`.
+* Since it filters grouped data, it can use aggregate functions in the filter.
+
+**Examples**
+```sql
+-- PostgreSQL dialect
+
+-- Show all cities where empoloyee count is higher than 20
+SELECT city, COUNT(customer_id) AS employee_cont
+FROM tbl_employees
+GROUP BY city
+HAVING COUNT(customer_id) > 20;
+
+/* RESULT:
+city        employee_count
+Rome        30
+Milano      25
+*/
+```
+
+#### ORDER BY
+It's used to sort the result-set in ascending or descending order.
+* Ascending order is by default, unless specified otherwise with `DESC`.
+* It can use column names or ordinal numbers starting with 1.
+* It can sort columns even if they are not in the `SELECT` statement unless `DISTINCT` or `UNIQUE` is used (DISTINCT performs row grouping which is why they need to be part of the SELECT statement).
+
+**Example**
+```sql
+-- PostgreSQL dialect
+-- Select columns first_name and age from table "tbl_employees" for customers between age of 25 and 30, sorted descendingly.
+SELECT first_name, age
+FROM tbl_employees
+WHERE age BETWEEN 25 AND 30
+ORDER BY DESC;
+```
 
 ## Data Manipulation Language (DML)
 
@@ -360,7 +544,6 @@ Order of execution will depend on which clauses are used in the SQL statement. I
 * Unlike with just `WHERE` which process individual rows and returns them as detailed results, `GROUP BY` will treat groups of rows as a single unit, returning aggregated results where single row data is lost in the result set.
 * When `GROUP BY` get's the processed data from the `FROM` clause, it will check rows and mark them for grouping based on the criteria from the `GROUP BY` clause.
 * Then it transforms the data set to a grouped structure similar to pivot table in Excel.
-* When `GROUP BY` is used, `SELECT` can only have columns which are not of the grouping expression or columns enclosed in an aggregate function, since only those are guaranteed to have the same value for all the rows within a group (point of grouping).
 * Aggregate functions ignore `NULL` values,
 
 ### 4. HAVING
@@ -376,8 +559,6 @@ Order of execution will depend on which clauses are used in the SQL statement. I
 
 * Before the result set the `SELECT` is now holding is outputted, it's passed by to the `ORDER BY` clause (in case it's used) to be sorted as configured in the clause.
 * At this point, data set becomes a [cursor](https://en.wikipedia.org/wiki/Cursor_(databases)).
-* It can use column names or ordinal numbers starting with 1.
-* It can sort columns even if they are not in the `SELECT` statement unless `DISTINCT` is used (DISTINCT groups row which is why they need to be part of the SELECT statement).
 * NULLs are also sorted but depending on the database system:
 	* MySQL and MS SQL server gives them lowest sorting value (goes first in ASC order).
 	* PostgreSQL and Oracle gives them highest sorting value by default but support changing it with `NULLS FIRST` or `NULLS LAST` keywords.
@@ -491,12 +672,62 @@ Processing logic of joins inside `WHERE` clause goes in  these steps:
 1. **Cartesian product** - every join starts with [cartesian product](https://en.wikipedia.org/wiki/Cartesian_product). If `CROSS JOIN` was used, the procedure stops here.
 2. **Qualification phase** - inner and outer joins are evaluated row by row based on the condition defined via `ON` keyword and only rows where condition is met are found in the final data set. For inner joins, the procedure stops here.
 3. **Reservation phase** - for outer joins, qualified rows move to the **reservation** procedure where, depending on the outer join type, required rows removed during qualification phase are added back with NULLs assigned.
+
+From the algorithmic processing side, there are three types of forming joins:
+1. **Nested Loop Join** 
+	* All rows from both tables are compared to each other.
+	* For each row in one table, other table is looped and on each iteration keys are compared.
+	* Simple to implement but can be expensive to execute if data set is large.
+2. **Hash Joins** 
+	* Hash values of keys are calculated and join is then based on the matching hash values.
+	* First hash values of key values in smaller table are calculated and stored in a hash table, which has the hash value and row columns. Then larger table is scanned where rows from smaller table's hash table are matched.
+1. **Sort Merge Join** 
+	*  Both tables are sorted and comparison then takes advantage of the order.
+	* Compares row like nested loop join but it can stop when it's not possible to find match later in the table because of the sort order, making it more efficient.
 #### Self Joins
 
 These are when same table is used multiple times in the `FROM` clause, joining each to itself.
 *  Same table can be used multiple times in same statement as long each instance is uniquely aliased.
 * Each instance of table expression is independent of each other.
 
+
+## Functions
+
+
+### User Defined Functions
+
+User-defined functions are routines that accept parameters, perform an action, such as a complex calculation, and return the result of that action as a value. The return value can either be a single scalar value or a result set.
+
+Functions are best used when:
+* You need to perform data transformation operations, including calculations, formatting, and conversions, and return a result.
+* You need an object that can be called as part of a SQL statement and must return a value to be used in the statement.
+
+**Examples** 
+
+```sql
+-- T-SQL dialect
+
+-- HOW TO DECLARE FUNCTION
+-- This function takes a string parameter of department and returns count of that department employees
+CREATE FUNCTION func_countDeptEmployees(@department VARCHAR(50))
+-- First declare waht it returns
+RETURNS INT
+AS
+-- With BEGIN and END write the main logic
+BEGIN
+  -- Declare variable for storing result
+  DECLARE @numOfEmployees INT
+  -- Associate the needed calculation with that variable so it holds the result
+  SELECT @numOfEmployees = COUNT(*) FROM [dbo].[tblEmployees]
+  WHERE Department = @department
+  -- Declare return statement and pass it the variable holding the result
+  RETURN (@numOfEmployees)
+END
+
+-- HOW TO CALL IT (USE IT)
+-- To execute it, use `SELECT` statement:
+SELECT dbo.func_countDeptEmployees('Finance')
+```
 
 
 ## Window Functions
@@ -604,7 +835,7 @@ These two are also sometimes considered as ranking functions:
 
 #### Examples
 
-**ROW_NUMBER()**
+**ROW_NUMBER**
 ```sql
 -- T-SQL dialect
 -- Example with ROW_NUMBER function to return customer's most recent order
@@ -645,7 +876,7 @@ NOTES
 */
 ```
 
-**RANK() & DENSE_RANK()**
+**RANK & DENSE_RANK**
 ```sql
 -- T-SQL dialect
 -- Example to rank employees in alphabetical order by their last name
@@ -669,9 +900,57 @@ Hector       Dillon      5       4
 ```
 
 
+## CTE
+
+## Data Types
+
+## Operators
+
+
+### Comparison Operators
+
+| Operator                         | Meaning                             |
+| :------------------------------- | :---------------------------------- |
+| = (Equals)                       | Equal to                            |
+| &gt; (Greater Than)              | Greater than                        |
+| &lt; (Less Than)                 | Less than                           |
+| &gt;= (Greater Than or Equal To) | Greater than or equal to            |
+| &lt;= (Less Than or Equal To)    | Less than or equal to               |
+| &lt;&gt; (Not Equal To)          | Not equal to                        |
+| != (Not Equal To)                | Not equal to (not ISO standard)     |
+| !&lt; (Not Less Than)            | Not less than (not ISO standard)    |
+| !&gt; (Not Greater Than)         | Not greater than (not ISO standard) |
+
+### Logical Operators
+
+| Operator  |                            Meaning                             |
+| :-------- | :------------------------------------------------------------- |
+| ALL       | TRUE if all of a set of comparisons are TRUE.                  |
+| AND       | TRUE if both Boolean expressions are TRUE.                     |
+| ANY       | TRUE if any one of a set of comparisons are TRUE.              |
+| BETWEEN   | TRUE if the operand is within a range.                         |
+| EXISTS    | TRUE if a subquery contains any rows.                          |
+| IN        | TRUE if the operand is equal to one of a list of expressions.  |
+| LIKE      | TRUE if the operand matches a pattern.                         |
+| NOT       | Reverses the value of any other Boolean operator.              |
+| OR        | TRUE if either Boolean expression is TRUE.                     |
+| SOME      | TRUE if some of a set of comparisons are TRUE.                 |
+  
+### Arithmetic Operators
+
+|   Operator    |                                                       Meaning                                                        |
+| :------------ | :------------------------------------------------------------------------------------------------------------------- |
+| + (Add)       | Addition                                                                                                             |
+| - (Subtract)  | Subtraction                                                                                                          |
+| * (Multiply)  | Multiplication                                                                                                       |
+| / (Divide)    | Division                                                                                                             |
+| % (Modulo)    | Returns the integer remainder of a division. For example, 12 % 5 = 2 because the remainder of 12 divided by 5 is 2.  |
+
+## Functions
 
 ## References
 
 1. Good advanced courses with deep dives in SQL internals by Ami Levin on [LinkedIn](https://www.linkedin.com/learning/instructors/ami-levin). See Advanced SQL series about query processing and Window functions.
+2. Good advanced courses with practical advices around query plan builder, procedural behinds of SQL and data modeling by Dan Sullivan on [LinkedIn](https://www.linkedin.com/learning/instructors/dan-sullivan). See "Advanced SQL"  bot for app development and data science.
 
 
