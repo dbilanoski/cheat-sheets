@@ -42,9 +42,10 @@ Ubuntu server will be used as an example but the procedure can be applied to oth
 In this approach, we are using [realmd](https://www.freedesktop.org/software/realmd/) for discovering and interacting with the AD and [chrony](https://chrony.tuxfamily.org/) for synchronizing time against the domain NTP server and [samba](https://www.samba.org/) for configuring shared resources later.
 
 ```bash
-Sudo apt install realmd samba libpam-winbind krb5-user krb5-config chrony
+sudo apt install realmd samba libpam-winbind krb5-user krb5-config chrony
 ```
 
+**Note** - *windbind* is used instead of the *sssd* for the name resolution of AD objects since Samba network shares require winbind as of version 4.8.
 
 ### 3. Configure time synchronization
 

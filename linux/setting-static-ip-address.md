@@ -147,6 +147,11 @@ network:
 sudo netplan apply
 ```
 
+**Note**: In case you get an error *"Permissions for /etc/netplan/some-filename.yaml are too open. Netplan configuration should NOT be accessible by others."*, you'll need to harden the file permissions by using this command:
+
+```bash
+sudo chmod 600 /etc/netplan/your-problematic-filename.yaml
+```
 
 ## References
 
