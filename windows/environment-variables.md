@@ -4,6 +4,10 @@ Environment variables store data that's used by the operating system and other p
 
 * They are always stored as strings.
 * Unlike in Linux or macOS, they are not case sensitive here.
+
+To list them all, use these commands:
+* In PowerShell: `dir env:`
+* In CMD: `set`
 ## Configure Environment Variables
 
 Those can be temporary (process scoped) or persistent spanning machine wide or only for the current user.

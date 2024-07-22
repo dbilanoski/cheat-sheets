@@ -86,9 +86,9 @@ CREATE TABLE [dbo].[employees](
 ```
 
 ### ALTER
-| Description                                                         | Syntax                                                     |
-| ------------------------------------------------------------------- | ---------------------------------------------------------- |
-| Add, delete, or modify columns or constraints in an existing table. | `ALTER TABLE table_name ADD COLUMN column_name data_type;` |
+| Description                                                         | Syntax                                              |
+| ------------------------------------------------------------------- | --------------------------------------------------- |
+| Add, delete, or modify columns or constraints in an existing table. | `ALTER TABLE table_name ADD column_name data_type;` |
 
 **Example**
 ```sql
