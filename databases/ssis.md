@@ -55,9 +55,17 @@ Consists of Control Flow, Data Flow, Parameters and Event Hanlders.
 
 
 ## Defining Connections
+
+To be able to import source data or export processed data, connections have to be defined.
 ### Flat File Connection
-* Browse to a flat file (text, csv, Excel)
+If creating for source:
+* Browse to a flat file (text, csv, Excel).
 * Once loaded, check if encoding and delimiter is fine. "Columns" should show correct tabular representation of your data.
+
+If creating for destination:
+* Write absolute path to where your csv or txt file should be saved.
+* Review delimiter, row and column configuration.
+* Once you connect your data to it, make sure to configure mappings.
 
 ### Local Microsoft SQL Server
 Few thing to note: 
