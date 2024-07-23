@@ -47,12 +47,15 @@ SSIS project, when edited in VS, is structured as:
 Consists of Control Flow, Data Flow, Parameters and Event Hanlders.
 
 ### Control Flow
-* Controls the flow of execution.
+* Controls the flow of execution, like a main window where you chain different tasks.
 * Contains different tasks, show them graphically as chained blocks of logical units describing the procedure.
+* It can stack multiple data flow tasks along side tasks such as actions in the databases, executing SQL commands, file system actions etc.
+* In case blocks of Control Flow tasks are **not connected sequentially, they will execute in parallel.** Meaning, you can have multiple procedures in one Control Flow running asynchronously.
 
 ### Data Flow
-* One of the tasks in Control Flow - defines source, transformation or destination tasks as a single "container" of data flow tasks.
-
+* One of the tasks in Control Flow - defines source, transformation and destination tasks as a single "container" of data flow tasks.
+* Inside one data flow task, many ETL steps can be configured to fetch data, transform it and store it elsewhere.
+* Basically heart of the SSIS platform.
 
 ## Defining Connections
 
@@ -81,7 +84,6 @@ Few thing to note:
 3. Configure authentication (mine was "Windows Authentication").
 4. Select database to work with.
 
-
 ## Data Transformation Tasks
 
 ### Data Conversion
@@ -94,7 +96,6 @@ Few thing to note:
 4. Optionally, length, precision, scale and code page can be configured.
 
 Once in the destination mapping, make sure to select newly created columns (ones from "Output Alias").
-
 
 ### Derived Column
 * Creates new column and allows expressions to be used where other columns can be used to produce new values.
@@ -125,13 +126,11 @@ More details in the official docs [here](https://learn.microsoft.com/en-us/sql/i
 1. Once inside the Sort block, select input columns you want to work with.
 2. Choose "Sort Type" as ascending or descending.
 
-
 ### Multicast
 * Provides means of creating multiple output streams of single input making saving transformed data at multiple places at once possible.
 
 **Steps to configure**
 1. Add Multicast block and point connections to multiple destinations.
-
 
 ### Conditional Split
 * Provides means of defining filters to further process the dataset (same as with `WHERE` statement in SQL)
@@ -143,3 +142,54 @@ More details in the official docs [here](https://learn.microsoft.com/en-us/sql/i
 3.  In the "Condition", write your statement or choose one of the functions from the selection above.
 4. If you want to give this filter a custom name, under "Output Name" rename "Case 1" to something else.
 5. Once you connect this to a next step in the pipeline, it will as which filter to use, select your filter or "Case 1" if you did not rename it.
+
+### Merge
+* Combines rows from 2 sources of sorted data.
+* It requires data to be sorted (so use Sort transformation task).
+* Similar to SQL `UNION` but it does not remove duplicates.
+* If sorting is not important, use "Union All" task.
+* If you have more than two sources, use another Merge block and connect previously merged data and the third source.
+
+**Steps to configure**
+1. Prior to connecting data pipe to the Merge block, have one Sort block to sort the data.
+2. Merge can take 2 sources - once first sorted source is connected to the Merge, it will ask which slot to use.
+3. Connect the other source.
+
+### Union All
+* Combines rows from multiple sources of data.
+* Similar to SQL `UNION ALL` .
+* If sorting is important, use Merge.
+
+**Steps to configure**
+1. Connect data pipes to the Union All block to merge the data.
+
+
+### Merge Join
+* Combines two sorted data flows using FULL, LEFT or INNER JOIN.
+* It requires data to be sorted (so use Sort transformation task).
+
+**Steps to configure**
+1. Prior to connecting data pipe to the Merge Join block, have one Sort block to sort the data.
+2. Merge Join can take 2 sources - once first sorted source is connected to the Merge Join, it will ask which slot to use.
+3. Once both sources are connected, open the Merge Join block and configure:
+	1. Join type (Inner, Left outer, Full outer).
+	2. Select columns to be included from both data sets.
+	3. Select "Join Key" in both sources so the join action can be performed.
+	4. Optionally, rename output aliases if needed.
+
+
+## Control Flow Tasks
+* Tasks not necessarily related to data flow and ETL but different support or batch tasks outside of data flow, such as: 
+	* Execute SQL tasks in the database, copying files, reorganizing database indexes or compressing databases, etc.
+	* Bulk inserts, executing processes, executing other packages, file system tasks etc.
+
+### Execute SQL Task
+* Executes an SQL statement or stored procedure in an relational database for which there is defined connection.
+* Most usefully for cleaning existing data in a table before executing Data Flow task which will upload new data.
+
+**Steps to configure**
+1. Make sure you have a connection to the relational database configured.
+2. Once in the "Execute SQL Task" block, under "General", configure:
+	1. Connection type: OLE DB or ADO.NET, depending on what you configured in the connection.
+	2. Connection: Choose existing connection.
+	3. SQL Statement: write your SQL statement, example: `TRUNCATE TABLE [dbo].[Customers]`.
