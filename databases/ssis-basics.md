@@ -1,3 +1,4 @@
+#sql #ssis
 # Microsoft SQL Server Integration Services
 Enterprise level data integration and transformation platform able to perform [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load) tasks. It automates extracting and transforming the data from one place to another.
 
@@ -44,7 +45,7 @@ SSIS project, when edited in VS, is structured as:
 | Deployment | Act of deploying completed SSIS project on an instance of the SQL server where it can be executed or sheduled.                                                                                                                        |
 ## Package Design Structure
 
-Consists of Control Flow, Data Flow, Parameters and Event Hanlders.
+Consists of Control Flow, Data Flow, Parameters and Event Handlers.
 
 ### Control Flow
 * Controls the flow of execution, like a main window where you chain different tasks.
@@ -52,10 +53,74 @@ Consists of Control Flow, Data Flow, Parameters and Event Hanlders.
 * It can stack multiple data flow tasks along side tasks such as actions in the databases, executing SQL commands, file system actions etc.
 * In case blocks of Control Flow tasks are **not connected sequentially, they will execute in parallel.** Meaning, you can have multiple procedures in one Control Flow running asynchronously.
 
+#### Precedence Constraint
+Between blocks of Control Flow tasks arrows are drawn to create order of execution or define parallel execution.  Such arrows defining order of operation is called precedence constraints and those can be expressed as:
+* Success
+* Failure
+* Completion
+
+This kind of expression of constraint type provide means of defining flow logic such as:
+* If this task is successful, do this (Green arrow).
+* If it failed, then do this (Red arrow).
+
+**Steps to configure**
+1. Once you draw flow from one task to another, double click the arrow.
+2. This will open an editor window where you choose the "Value" of the "Constraint" to be "Success", "Failure" or "Completion". Default is "Success".
+
+#### Expressions
+You can also define custom conditions for the flow using expressions. Instead of having "success", "failure" or "completion", custom expressions can be defined to control the flow more precisely.
+
+**Steps to configure**
+1. Once you draw flow from one task to another, double click the arrow.
+2. This will open an editor window, choose the "Evaluation operations" as "Expression"
+3. In "Expression", click the three horizontal dots to open an expression builder where you'll have access to built in functions and variables.
+	1. Here the aim is to construct an expression which returns boolean.
+	2. There will be an useful option for evaluating conditions.
+4. In case you define multiple constraints, there will be an option to choose whether logical "AND" or logical "OR" is applied.
+
+**Examples of expressions**
+* `DATEPART( "DD", getdate()) > 15` 
+	* Checks if current day of the month is greater than 15th
+	* Means that if it is, next task (and other chained to it) will execute, otherwise will not.
+* `DATEPART( "DD", getdate()) > @[User::day_of_month]` 
+	* Same example as above which is using a variable called "day_of_month".
+
+#### Variables
+* Same as in other languages, it's a temporary storage which can be called upon.
+
+**Steps to configure**
+1. In the main Control Flow window, right click, then do  "Variables".
+2. "Variables" windows will appear. Here you can click "New".
+3. Under "Name" give it a name.
+4. Under "Data type", select appropriate data type.
+5. Under "Value", put the value you want to store or use "Expression" to dynamically create values.
+
+ 
+ 
 ### Data Flow
 * One of the tasks in Control Flow - defines source, transformation and destination tasks as a single "container" of data flow tasks.
 * Inside one data flow task, many ETL steps can be configured to fetch data, transform it and store it elsewhere.
 * Basically heart of the SSIS platform.
+
+#### Types Of Transformation
+* Can be classified as synchronous and asynchronous.
+* Can also be classified as blocking, non-blocking and semi-blocking.
+
+
+
+
+### Event Handlers
+* At run time, packages and containers raise events (such as OnError event).
+* Custom events can be defined to extend the functionality.
+
+**Steps to configure**
+1. In the main package design window, click on the "Event Handlers" tab.
+2. You'll be able to select there:
+	1. Executable: To which package, task or container this event applies.
+	2. Event handler: which type of event will trigger the handler.
+3. Now put other tasks here, such as "Execute SQL Task" or "Data Flow" tasks depending on actions you wish to take if the event is triggered.
+
+Example would be writing an log to a file or a database or sending an email notification.
 
 ## Defining Connections
 
@@ -193,3 +258,88 @@ More details in the official docs [here](https://learn.microsoft.com/en-us/sql/i
 	1. Connection type: OLE DB or ADO.NET, depending on what you configured in the connection.
 	2. Connection: Choose existing connection.
 	3. SQL Statement: write your SQL statement, example: `TRUNCATE TABLE [dbo].[Customers]`.
+
+### File System Task
+* Performs operations on files and folders in the file system.
+* You can delete, create or copy files and folders.
+
+**Steps to configure**
+1. One in the "File System" block, chose the "Operation" you want to perform.
+2. Configure parameters and connection variables under "Destination Connection" and "Source Connection"
+	1. Pay attention to things such as "Overwrite existing file" or "Check if folder exists" which might be essential.
+3. Make sure to configure connections to files or file system places where you want to perform operations.
+	1. Once in the connection manager editor, it will ask you for the usage type (create new, select existing, etc.).
+
+
+### Execute Process Task
+* Provides means of running batch files or applications present in the file system.
+* Useful to execute external batch scripts or do tasks with cli tools.
+
+**Steps to configure**
+1. Once inside the "Execute Process" block, click "Process" in the left menu.
+2. Under "Executable" you can put name of the executable if it's part of the Windows "PATH" or absolute path to your script\application
+	1. Example: `%windir%\system32\msinfo32.exe` will execute System Information panel.
+3. Optionally and depending on you case, you can use other self-explanatory fields to define cli arguments for your app, variables for input and output, timeouts and window styles.
+
+
+### Execute Package Task
+
+* Used to execute another package as part of the control flow of the current package.
+* Useful in complex procedures where you might have a "master package" containing order of execution of other packages.
+
+**Steps to configure**
+1. Once in the "Execute Package" container, give it a meaningful name.
+2. Click "Package", then configure:
+	1. ReferenceType - whether the package will come from within the project or will be an external package.
+	2. Depending on the selection; "External Reference" will have additional fields. For the "Project Reference", select from "PackageNameFromProjectReference" which package you want to execute.
+3. Optionally, parameter bindings and expressions can be configured,
+
+### Containers
+#### Sequence Containers
+* Used to group multiple control flow tasks for easier management.
+* Grouped items will have the execution order between them inside of the container regardless of the grouping.
+* Option to "Execute container" will appear.
+* Can be used as a scope for variables.
+
+**Steps to configure**
+1. From "Containers", add "Sequence Container" block to the Control Flow window.
+2. Give it a meaningful name.
+3. Drag and drop to it Control Flow tasks you want to group.
+4. Review and configure the execution order by drawing out the execution lines both for the grouped items inside the container, and the items outside of it.
+
+
+#### Foreach Loop Container
+* Similar to foreach loop in programming languages, it will iterate over a collection of items, such as files in a directory or emails in an recordset.
+
+**Steps to configure**
+1. Once inside the Foreach Loop container block, give it a name and description if needed.
+2. Click on the "Collection", then configure "Enumerator" which means what you will be iterating over (files, variables, rowsets from databases).
+3. Depending on your selection, you'll need to configure additional parameters, such as folder and file names in case the enumerator is set to be a file.
+4. Click on the "Variable Mappings" in case you need to store result of enumerator to a variable.
+5. Once you configured looping logic, you can add any data flow blocks to the Foreach container to loop over.
+	1. Example, if you looped over each file in a folder and stored the absolute path of each file to a variable, you could add a data flow task to read each file and store it to the database. That way, one one connection was needed for as many files in the folder.
+
+
+#### For Loop Container
+* Similar to for loop in programming languages, classic iteration mechanism where you need to define starting value, increment logic for it and the completion condition so the loop has an exit strategy. 
+* Useful when you need the increment value on each iteration (days between the two dates, sequence of numbers in a rage, etc.).
+
+**Steps to configure**
+
+In this example, we are configuring a for loop which will use `counter` variable to store the current iteration, start at number 1 and end at number 3.
+
+1. Create a new variable called "Counter", type: Int32, Value: 0.
+2. Once inside the For Loop container block, there will be three For Loop Properties to configure:
+	1. InitExpression: `@Counter = 1`
+		1. This one is the initial value from which the loop starts from.
+		2. It can be just a value, but it's more usefull to map it to a variable we previously created.
+		3. We are saying here that the starting point is variable "Counter" with a value of 1.
+	2. EvalExpression: `@Counter <= 3`
+		1. This one will stop the looping once the expression written here evaluates to False.
+		2. Can be just a value but we are using our variable here.
+		3. We are saying here: when the counter is less than or equal to 3, stop the loop.
+	3. AssignExpression: `@Counter = @Counter + 1`
+		1. This is the increment logic which will change the counter on each iteration so we can actually reach the exit expression.
+		2. Can be decremental, same as elsewhere with for loops.
+
+![](databases/assets/ssis_for_loop.png)

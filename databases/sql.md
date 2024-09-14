@@ -946,7 +946,6 @@ Hector       Dillon      5       4
 | / (Divide)    | Division                                                                                                             |
 | % (Modulo)    | Returns the integer remainder of a division. For example, 12 % 5 = 2 because the remainder of 12 divided by 5 is 2.  |
 
-## Functions
 
 ## References
 

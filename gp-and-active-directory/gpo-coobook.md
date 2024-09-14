@@ -1,4 +1,4 @@
-# Group policy cookbook
+# Group Policy Cookbook
 
 ## Disable Chrome/Edge password manager
 
