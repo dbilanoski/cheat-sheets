@@ -342,4 +342,4 @@ In this example, we are configuring a for loop which will use `counter` variable
 		1. This is the increment logic which will change the counter on each iteration so we can actually reach the exit expression.
 		2. Can be decremental, same as elsewhere with for loops.
 
-![](databases/assets/ssis_for_loop.png)
+![](assets/ssis_for_loop.png)
