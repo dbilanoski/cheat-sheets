@@ -24,20 +24,20 @@ logging.critical('This is a CRITICAL message')
 
 ```
 
-### Configuration Breakdown:
+### Configuration Meaning
 
 - `filename='app.log'`: Specifies the name of the file where the logs will be saved.
 - `level=logging.DEBUG`: Sets the minimum level of logging. Here it's set to `DEBUG`, so all messages of level `DEBUG` and higher will be logged (DEBUG, INFO, WARNING, ERROR, CRITICAL).
 - `format='%(asctime)s - %(levelname)s - %(message)s'`: Defines the format of the log message. It includes the timestamp (`asctime`), the logging level (`levelname`), and the actual log message (`message`).
 - `datefmt='%Y-%m-%d %H:%M:%S'`: Specifies the date format in the log file.
 
-### Usage:
+### Usage
 
 - Log messages are saved to the file `app.log`.
 - You can control the level of detail by changing the `level` parameter.
 - You can log different levels of information using `logging.debug()`, `logging.info()`, `logging.warning()`, `logging.error()`, and `logging.critical()`.
 
-### Example `app.log` Output:
+### Example `app.log` Output
 ```text
 2024-09-12 10:45:12 - DEBUG - This is a DEBUG message
 2024-09-12 10:45:12 - INFO - This is an INFO message

@@ -5,7 +5,6 @@ Built-it parser for command-line options, arguments and sub-commands.
 * The [`argparse`](https://docs.python.org/3/library/argparse.html#module-argparse "argparse: Command-line option and argument parsing library.") module also automatically generates help and usage messages. 
 * The module will also issue errors when users give the program invalid arguments.
 
-
 ## Example
 
 ```python
@@ -239,6 +238,7 @@ print("Script execution complete!")
 ```
 
 **Usage**
+
 `python script.py file.txt --verbose --count 2 --output results.txt --log-level DEBUG --number 42
 `
 
