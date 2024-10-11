@@ -61,8 +61,11 @@ directory_path.is_dir() # Returns True
 # Check if path exists
 file_path.exists() # Returns True
 
+# Returns parts of the paths
+print(file_path.parts) # Returns ("home","user","documents","new_file.txt")
+
 # Get the name of the file 
-print(file_path.name) # Outputs: example.txt 
+print(file_path.name) # Outputs: new_file.txt
 
 # Get the file extension 
 print(file_path.suffix) # Outputs: .txt 

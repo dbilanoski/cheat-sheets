@@ -9,6 +9,7 @@
 	1. [Store SQL Query Result To A Variable](#Store%20SQL%20Query%20Result%20To%20A%20Variable)
 	2. [Change Connection Manager Source String To A Variable](#Change%20Connection%20Manager%20Source%20String%20To%20A%20Variable)
 	3. [Current Time Stamp As A Variable](#Current%20Time%20Stamp%20As%20A%20Variable)
+	4. [Show Current Iterator Value In For Loop](#Show%20Current%20Iterator%20Value%20In%20For%20Loop)
 
 
 
@@ -76,3 +77,30 @@ Conversion was needed due to time incompatibility issues probably around millise
 3. This can now be inserted into a database to a datetime2 column using OLE DB driver.
 
 ![](databases/assets/Pasted%20image%2020240730143053.png)
+
+
+### Show Current Iterator Value In For Loop
+
+During development, Windows message box can be used to print current iteration as show below. Just make sure not to use it in case of many iteration, then redirecting output to log might be more practical.
+
+Steps:
+1. Say you have a variable named "abs_path" created and added to foreach block with expression 0 so each iteration is stored in that variable.
+2. Add script block to the foreach block.
+3. In the script block, add read only variable "abs_path" so it can be accessed from the script.
+4. Click edit script, then add code below:
+   
+   ```csharp
+   using System; 
+   using Microsoft.SqlServer.Dts.Runtime; 
+   using System.Windows.Forms; 
+   
+   public void Main() { 
+   // Retrieve the file path from the SSIS variable 
+   string current_value = Dts.Variables["User::abs_path"].Value.ToString(); 
+   // Display the file path in a message box 
+   MessageBox.Show("Current iteration value: " + current_value); 
+   // Indicate successful execution 
+   Dts.TaskResult = (int)ScriptResults.Success; }
+```
+
+Result: each time the `Foreach Loop Container` iterates over a file, a message box will pop up displaying the current file name.
