@@ -104,3 +104,116 @@ Steps:
 ```
 
 Result: each time the `Foreach Loop Container` iterates over a file, a message box will pop up displaying the current file name.
+
+
+
+### Create Email Message Expression With Values From Variables
+
+**Example scenario:** After file sorting has been done where files are sorted into folders by years, send an email reporting number of files and file list for each year using these email message template:
+
+```text
+Howdy!
+
+- Number of files in 2024: {number}
+
+  filename 1
+  filename 2
+  ...
+  filename n
+  
+- Number of files in 2023: {number}
+  
+  filename 1
+  filename 2
+  ...
+  filename n
+
+Until the next run,
+FileSortingWizzard 3000.
+```
+
+**In this approach, I'm using:**
+* Script block to produce values and update variables with them.
+* Send Email task with `MessageSource` property configured as an expression to produce the email content.
+
+
+**Steps:**
+1. Configure SMTP Connection Manager according to your vendor.
+2. Create following variables:
+	1. `2024folderPath`, string = "C:\\your-path-to-folder\2024"
+	2. `2024filesCount`, int = 0
+	3. `2024fileNames`, string, leave blank
+	4. `2023folderPath`, string = "C:\\your-path-to-folder\2023"
+	5. `2023filesCount`, int = 0
+	6. `2023fileNames`, string, leave blank
+3. Create **Script Task**:
+	1. Under "read only variables", add folder path variables
+	2. Under "read write variables", add file count and file names variables
+	3. Click "Edit script", then write code as follows:
+	   
+	   ```c#
+	public void Main()
+	{
+	    // Get paths to directories from user variables
+	    string folder2024Path = Dts.Variables["User::2024folderPath"].Value.ToString();
+	    string folder2023Path = Dts.Variables["User::2023folderPath"].Value.ToString();
+	
+	    // Setup file count and filename variables
+	    int count2024 = 0;
+	    string fileNames2024 = "";
+	    int count2023 = 0;
+	    string fileNames2023 = "";
+	
+	    // 2024 Files
+	    // Get all files from 2024 folder
+	    string[] files2024 = System.IO.Directory.GetFiles(folder2024Path);
+	    // Get count of files in folder
+	    count2024 = files2024.Length;
+	    // Loop over those and save each filename with "new line" instruction to the filenames variable
+	    foreach (string file in files2024)
+	    {
+	        fileNames2024 += System.IO.Path.GetFileName(file) + "\n";
+	    }
+	
+	    // 2023 Files
+	    //Get all files from 2023 folder
+	    string[] files2023 = System.IO.Directory.GetFiles(folder2023Path);
+	    // Get count of files in folder
+	    count2023 = noSalesFiles.Length;
+	    // Loop over those and save each filename with "new line" instruction to the filenames variable
+	    foreach (string file in files2023)
+	    {
+	        fileNamesNoSales += System.IO.Path.GetFileName(file) + "\n";
+	    }
+	
+	
+	    // Set the values to SSIS variables
+	    Dts.Variables["User::2024filesCount"].Value = count2024;
+	    Dts.Variables["User::2024fileNames"].Value = fileNames2024;
+	    Dts.Variables["User::2023filesCount"].Value = count2023;
+	    Dts.Variables["User::2023fileNames"].Value = fileNames2023;
+	
+	    // Mark script success
+	    Dts.TaskResult = (int)ScriptResults.Success;
+	}```
+	
+4.  Variables should now be ready both for counts and for the file names. Create **Send Email Task** and configure as follows:
+	1.  Under "General", `MessageSourceType` = Direct Input
+	2. Configure other parameters for sending emails according to you needs.
+	3. Click "Expressions", expand it and find `MessageSource`. Configure expression like this:
+	   
+	   ```c#
+	"Howdy,\n\n" +
+	"- Number of files in 2024: " + (DT_WSTR, 12) @[User::count2024] + "\n\n" + @[User::fileNames2024] + "\n" +
+	"- Number of files in 2023: " + (DT_WSTR, 12) @[User::count2023] + "\n\n" + @[User::fileNames2023] + "\n\n" +
+	"Until the next run," + "\n" +
+	"FileSortingWizzard 3000."
+
+```
+	   
+	5.  Where:
+		1. (DT_WSTR,  12) converts variable to a string.
+		2. "\n" creates a new line.
+		3. "+" is concatenation operator.
+		   
+5. Test your script both for content and for email sending.

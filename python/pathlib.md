@@ -125,6 +125,7 @@ print(file_content) # Outputs: Hello, World!
 
 # Rename (or move) a file 
 renamed_file = file_path.rename('renamed_example.txt') # Moves/renames 'example.txt' 
+# The target path may be absolute or relative. Relative paths are interpreted relative to the current working directory, _not_ the directory of the `Path` object.
 
 # Move a file to a new directory 
 moved_file = renamed_file.replace(directory_path / 'renamed_example.txt') # Moves it to documents 
