@@ -10,6 +10,28 @@
 	1. [[#DTMF]]
 
 
+## Automated Call Distribution Basics
+
+### Skill
+
+A **Skill** represents the expertise required to handle a specific type of call (e.g., language, product knowledge). Agents are assigned skills, and calls are routed to agents with the matching skill.
+
+### Split
+
+A **Split** is a group of agents sharing the same skill. It’s where calls are queued when no agent is immediately available. The term is often interchangeable with **Skill Group**.
+
+### Vector
+
+A **Vector** is a predefined call routing script that determines how a call is handled once it reaches the system. It can route calls based on conditions like time, customer input, or agent availability.
+
+### VDN (Vector Directory Number)
+
+A **VDN** is a virtual number that directs incoming calls to a **Vector**. It serves as the entry point for external calls into the contact centre system.
+
+### Simplified Flow
+- A customer dials a customer support number, which is routed to a **VDN**.
+- The **VDN** invokes a **Vector**, which determines the routing logic (e.g., language selection, call priority).
+- The call is routed to a **Split** (skill group) of agents with the appropriate **Skill** to handle the query.
 
 ## Dialers
 

@@ -94,3 +94,16 @@ git branch -m master
 ```powershell
 git push -f origin master
 ```
+
+
+## Change Remote URL In Local Repository
+
+Open terminal, navigate to your repository folder.
+
+```powershell
+# To see current remote URL
+git remote -v
+
+# To update it
+git remote set-url origin https://your-url.git
+```
