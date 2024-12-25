@@ -114,7 +114,8 @@ print(file_path.stat().st_ctime)
 directory_path.mkdir(exist_ok=True) 
 
 # Create nested directories (like `mkdir -p` in bash) 
-nested_dir = Path('parent_dir/child_dir') nested_dir.mkdir(parents=True, exist_ok=True) 
+nested_dir = Path('parent_dir/child_dir') 
+nested_dir.mkdir(parents=True, exist_ok=True) 
 
 # Write text to a file (creates file if it doesn't exist)
 file_path.write_text("Hello, World!") # Overwrites content if file exists 
