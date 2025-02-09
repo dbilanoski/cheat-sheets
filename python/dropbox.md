@@ -39,6 +39,7 @@ def connect_to_dropbox(token: str | None) -> dropbox.Dropbox:
   """
   return dropbox.Dropbox(token)
 
+
 # File or folder uploading
 def upload_file(dropbox_api: dropbox.Dropbox, local_file_path: str, remote_file_path: str) -> None:
   """
@@ -61,6 +62,7 @@ def upload_file(dropbox_api: dropbox.Dropbox, local_file_path: str, remote_file_
   except Exception as e:
     print(f"Something went wrong during upload, error: {str(e)}")
 
+
 # Downloading
 def download_file(dropbox_api: dropbox.Dropbox, remote_file_path: str, local_file_path: str) -> None:
   """
@@ -77,6 +79,7 @@ def download_file(dropbox_api: dropbox.Dropbox, remote_file_path: str, local_fil
     print(f"Downloaded {remote_file_path} to {local_file_path} successfully.")
   except Exception as e:
     print(f"Something went wrong during download, error: {str(e)}")
+
 
 # List files and folders
 def list_files(dropbox_api: dropbox.Dropbox, remote_folder_path: str) -> list | None:
@@ -98,6 +101,7 @@ def list_files(dropbox_api: dropbox.Dropbox, remote_folder_path: str) -> list | 
   except Exception as e:
     print(f"Error listing folder {remote_folder_path}: {e}")
 
+
 # Delete file or folder
 def delete_item(dropbox_api: dropbox.Dropbox, remote_item_path: str) -> None:
   """
@@ -113,6 +117,7 @@ def delete_item(dropbox_api: dropbox.Dropbox, remote_item_path: str) -> None:
     print(f"Deleted {remote_item_path} successfully.")
   except Exception as e:
     print(f"Error deleting file {remote_item_path}: {e}")
+
 
 # Create folder
 def create_folder(dropbox_api: dropbox.Dropbox, remote_folder_path: str) -> None:
@@ -133,6 +138,7 @@ def create_folder(dropbox_api: dropbox.Dropbox, remote_folder_path: str) -> None
       print(f"Folder {remote_folder_path} already exists.")
     else:
       print(f"Something went wrong while trying to create folder {remote_folder_path}, error: {e}.")
+
 
 # Create shared link
 def create_shared_link(dropbox_api: dropbox.Dropbox, remote_item_path: str) -> str | None:
