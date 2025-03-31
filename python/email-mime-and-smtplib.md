@@ -6,7 +6,7 @@ Python's `email.mime` and `smtplib` modules allow you to create and send emails 
 
 - `smtplib`: Provides an interface to send emails using the Simple Mail Transfer Protocol (SMTP).
 
-## Full Example With Features
+## Full Example Using Service Account With Features
 
 ```python
 import smtplib  # Library for sending emails via SMTP
@@ -34,6 +34,7 @@ def send_email(email_to: list, email_cc: list, custom_message: str, attachment: 
     - csv_content: Optional list of lists to attach as a CSV file.
     - csv_filename: Filename for the in-memory CSV.
     """
+    
     # SMTP configuration (Replace with actual SMTP server details)
     smtp_server = "smtp.example.com"
     smtp_port = 587
@@ -63,34 +64,110 @@ def send_email(email_to: list, email_cc: list, custom_message: str, attachment: 
     # Attach a file from disk if provided
     if attachment and os.path.exists(attachment):
         with open(attachment, "rb") as file_attachment:
-            part = MIMEBase("application", "octet-stream")  # Set attachment type
-            part.set_payload(file_attachment.read())  # Read file contents
-        encoders.encode_base64(part)  # Encode file in base64 for email compatibility
-        part.add_header("Content-Disposition", f"attachment; filename={os.path.basename(attachment)}")  # Set file name
-        message.attach(part)  # Attach file to email
+	        # Set attachment type
+            part = MIMEBase("application", "octet-stream")  
+            # Read file contents
+            part.set_payload(file_attachment.read())  
+        # Encode file in base64 for email compatibility
+        encoders.encode_base64(part)  
+        # Set file name
+        part.add_header("Content-Disposition", f"attachment; filename={os.path.basename(attachment)}")  
+        # Attach file to email
+        message.attach(part)  
     
     # Attach an in-memory CSV file if provided
     if csv_content:
-        csv_buffer = io.StringIO()  # Create an in-memory string buffer
-        csv_writer = csv.writer(csv_buffer)  # Create a CSV writer
-        csv_writer.writerows(csv_content)  # Write the list of lists to CSV
-        csv_buffer.seek(0)  # Move to start of the buffer
-        
-        part = MIMEBase("application", "octet-stream")  # Set MIME type
-        part.set_payload(csv_buffer.getvalue().encode("utf-8"))  # Convert string to bytes
-        encoders.encode_base64(part)  # Encode to base64
-        part.add_header("Content-Disposition", f"attachment; filename={csv_filename}")  # Set attachment name
-        message.attach(part)  # Attach to email
+	    # Create an in-memory string buffer
+        csv_buffer = io.StringIO()  
+        # Create a CSV writer
+        csv_writer = csv.writer(csv_buffer)  
+        # Write the list of lists to CSV
+        csv_writer.writerows(csv_content)  
+        # Move to start of the buffer
+        csv_buffer.seek(0)  
+	     
+	    # Set MIME type
+        part = MIMEBase("application", "octet-stream")
+        # Convert string to bytes
+        part.set_payload(csv_buffer.getvalue().encode("utf-8")) 
+        # Encode to base64 
+        encoders.encode_base64(part)  
+         # Set attachment name
+        part.add_header("Content-Disposition", f"attachment; filename={csv_filename}") 
+        # Attach to email
+        message.attach(part)  
     
     # Send the email via SMTP
     try:
         with smtplib.SMTP(smtp_server, smtp_port) as smtp_connection:
-            smtp_connection.starttls()  # Upgrade connection to secure TLS
-            smtp_connection.login(smtp_sender, smtp_password)  # Log in to SMTP server
-            smtp_connection.send_message(message)  # Send email
+	        # Upgrade connection to secure TLS
+            smtp_connection.starttls()  
+            # Log in to SMTP server
+            smtp_connection.login(smtp_sender, smtp_password)   
+            # Send email
+            smtp_connection.send_message(message)  
             logging.info("Email sent successfully")
     except Exception as e:
         logging.error(f"Email sending failed: {str(e)}")
+```
+
+## Full Example Using Gmail Account
+
+To be able to use your private Gmail account for sending email from withing apps, few steps needs to be taken:
+
+1. Enable Two-Step verification on your Gmail account (without it, next step is not possible.)
+2. Create an "App Password" to be used by your application
+   * Settings > Security settings > App Passwords
+   * Select "Mail" as the app and "Other" as the device
+   * Give it meaningful name and generate password
+   * Username will be your Gmail account, password your newly generated password
+
+ 
+```python
+import pandas as pd
+import smtplib
+from email.mime.text import MIMEText
+
+def send_email(email_to: list, email_cc: list, email_subject: str, email_message: str):
+
+    # Basic validation
+    if not (isinstance(email_to, list) or isinstance(email_cc, list)) :
+
+        raise TypeError("Make sure email_to and email_cc are lists.")
+
+    # Configure smtp params
+    smtp_user: str = "your-account@gmail.com"
+    smtp_password: str = "password for your gmail app"
+    smtp_server: str = "smtp.gmail.com"
+    smtp_port: int = 465
+   
+	# Configure email params
+    subject:str = email_subject
+    body: str = email_message
+    sender: str = smtp_user
+    recipients_to: list = email_to
+    recipients_cc: list = email_cc
+
+    # Construct message
+    em_message: MIMEText = MIMEText(body)
+    em_message["Subject"] = subject
+    em_message["From"] = sender
+    em_message["To"] = ",".join(recipients_to)
+    em_message["CC"] = ",".join(recipients_cc)
+
+    # Try sending
+    with smtplib.SMTP_SSL(smtp_server, smtp_port) as smtp:
+
+        try:
+            smtp.login(smtp_user, smtp_password)
+            print(f"Login to {smtp_user} successfull.")
+            smtp.send_message(em_message)
+            print(f"Email sent successfully.")
+            return True
+
+        except Exception as e:
+            print(f"Unable to send email, error: {e}")
+            return False
 ```
 
 
