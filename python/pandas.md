@@ -180,7 +180,7 @@ The PyArrow backend offers optimized performance for certain operations, particu
 results_arrow = pd.read_csv('./data/results.csv', engine='pyarrow', dtype_backend='pyarrow')
 results_arrow.info()
 ```
-## Mocking Files In Memory
+## Examples & Cookbook
 ### Creating an In-Memory Excel File from a DataFrame
 
 You can create a DataFrame and use the `BytesIO` object as a file-like buffer to save the Excel content.
@@ -222,3 +222,31 @@ pd.testing.assert_frame_equal(df, df_read)
 - **`pandas.testing.assert_frame_equal`**: A useful function for unit testing, allowing you to verify that the original and read DataFrames are equal.
 
 You can now use this in-memory Excel file in your unit tests without creating any files on disk.
+
+
+### Writing DataFrame.info() output to log
+
+Since dataframe.info() does not return a string but writes directly to sys.stdout, output first needs to be captured using io.StringIO.
+
+```python
+import logging
+import pandas as pd
+import io
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
+
+# Sample DataFrame
+df = pd.DataFrame({'A': [1, 2, 3], 'B': [4.5, 5.5, 6.5], 'C': ["x", "y", "z"]})
+
+# Capture df.info() output
+buffer = io.StringIO()
+# Redirect info output to buffer
+df.info(buf=buffer)  
+# Get string from buffer
+info_str = buffer.getvalue()  
+
+# Log the DataFrame info
+logger.info("\n" + info_str)
+```

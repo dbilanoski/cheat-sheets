@@ -72,7 +72,22 @@ print(file_path.suffix) # Outputs: .txt
 
 # Get the parent directory 
 print(file_path.parent) # Outputs: /home/user/documents
+
+# Get all parts of the path's parents as Path objects in a sequence
+print(file_path.parents)
+# Outputs:
+# /home/user/documents
+# /home/user
+# /home
+# /
+
+# file_path.parents is cools as you can check relative paths against the sequence
+# Example:
+# if Path("user/documents") in file_path.parents:
+	# print("Found")
+# Output: Found
 ```
+
 
 ### File Metadata
 

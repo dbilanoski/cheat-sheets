@@ -68,6 +68,39 @@ For retail editions and volume systems that have a KMS host key or a Multiple Ac
 
 For systems that have a Generic Volume License Key (GVLK) installed, this prompts a KMS activation attempt.
 
+### Check Volume Licence Details In Registry
+
+This key holds information related to KMS settins: 
+`HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform`
+
+To retrieve data with Powershell, run it as admin, then do:
+```powershell
+Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" | Select-Object KeyManagementServiceName, KeyManagementServicePort
+```
+
+Where:
+- `KeyManagementServiceName`: This property contains the hostname or IP address of the KMS server.
+- `KeyManagementServicePort`: This property contains the port number used by the KMS server (usually 1688).
+
+## How KMS Activation Works
+
+- **KMS Client Setup Key (GVLK):**
+    - Windows volume license editions use a Generic Volume License Key (GVLK). This key tells the OS to look for a KMS server.
+- **DNS SRV Record Query:**
+    - If a specific KMS server isn't already defined in the client's registry, the client queries DNS for SRV records of `_vlmcs._tcp`.
+    - This query aims to find available KMS hosts on the network.
+- **KMS Host Connection:**
+    - If the DNS query is successful, the client attempts to connect to a KMS host returned by the DNS server.
+- **Activation:**
+    - If the connection to the KMS host is successful, and the KMS host validates the client, the client is activated.
+- **Registry Behavior:**
+    - It's important to understand that while the client may use DNS to _discover_ the KMS server, it may or may not always write that server information to the registry in a persistent way.
+    - The operating system does keep track of the KMS server that it has used, for the purpose of the regular 7 day re-activation attempts. So information is stored, but the way and how long it is stored, can vary.
+    - The degree to which the information is persistently written to the registry can vary depending on windows version, and also on if KMS host caching is enabled.
+    - The goal of KMS is for the clients to be able to dynamically find the KMS servers. So the windows operating systems does not always need to write that information into the registry in a perminant way.
+- **Renewal:**
+    - KMS activation is valid for 180 days. The client attempts to renew its activation every 7 days. This renewal process might again involve DNS queries if the previously used KMS host is unavailable.
+
 ## Issues & Troubleshooting
 
 ### OxC004F074 error due to wrong time on computer

@@ -125,12 +125,11 @@ Work is performed on a new, separate branch. Once committed to this branch, a pu
     ```
 
 ## Conventions & Standards
-###  Commit Message Conventions
-
+###  Commit Messages Conventions
 
 **Format:**
 
-`action: RITM/CHG-request_number - commit description`
+`{action}/{request-id}-{short-description}`
 
 * **action:** Indicates the type of change.
 * **RITM/CHG-request_number:** Refers to the relevant request or change number from your issue tracking system.
@@ -138,19 +137,20 @@ Work is performed on a new, separate branch. Once committed to this branch, a pu
 
 **Actions:**
 
-* **feat:** Introduces a new feature.
-* **fix:** Corrects a bug or issue.
-* **chore:** Cosmetic changes not affecting the code logic.
-* **refactor:** Code changes that neither fix a bug nor add a feature.
-* **docs:** Documentation-only changes.
+* **feat:** Introduces a new feature or modifies existing functionality (e.g., changes in business logic).
+- **fix:** Resolves a bug or issue affecting functionality.
+- **refactor:** Improves existing code structure without changing behavior (e.g., renaming variables, optimizing logic).
+- **docs:** Updates documentation, comments, or README files.
+- **test:** Adds or updates automated tests.
 
 **Examples:**
 
-* `feat: RITM-1234 - Add user authentication functionality.`
-* `fix: CHG-5678 - Resolve issue with incorrect data display.`
-* `chore: RITM-9012 - Update dependencies to latest versions.`
-* `refactor: CHG-3456 - Improve code readability in user service.`
-* `docs: RITM-7890 - Update README with installation instructions.`
+- **feat:** Introduces a new feature or modifies existing functionality (changes in core logic \ behaviour).
+- **fix:** Resolves a bug or issue affecting functionality.
+- **refactor:** Improves existing code structure without changing behavior (e.g. renaming variables, optimizing logic).
+- **docs:** Updates documentation, comments, or README files.
+- **test:** Optional. adds or updates automated tests (future wise).
+- **chore:** Optional and to be considered - for things like updating configuration files, renaming files without changing the logic, metadata\versioning or dependency updates, CI/CD tasks.
 
 **Guidelines:**
 
@@ -160,6 +160,20 @@ Work is performed on a new, separate branch. Once committed to this branch, a pu
 * Reference the relevant request or change number.
 * Always add a space after the ":" and before the request number.
 * Keep the length of the first line under 72 characters (general standard, visibility without wrapping).
+
+### Branch Naming Convention:
+
+- Use `{action}/{request-id}-{short-description}`
+- The **request ID (RITMxxxxx or CHGxxxxx)** is **mandatory**
+- Use **kebab-case** (lowercase, hyphen-separated) for readability
+
+**Examples:**
+
+- `feat/RITM-1234-include-previous-day-data`
+- `fix/CHG-5678-correct-data-mapping`
+- `refactor/RITM-3456-optimize-data-transform`
+- `docs/RITM-7890-update-readme`
+- `test/RITM-2345-add-order-processing-tests`
 
 ## How To's
 ### Caching GitHub's Personal Access Tokens
@@ -269,3 +283,11 @@ git remote -v
 # To update it
 git remote set-url origin https://your-url.git
 ```
+
+
+
+1. Grab campaign's yesterday all calls data from GoContact via report designer api using custom daily template
+2. Grab campaign's historical all calls data from the start of campaign from GoContact via report designer api using custom daily template
+3. Perform needed processing to prepare format, columns, renames, data transformation, etc.
+4. Aggregation and sorting magic on the historical data, then query historical data using Contact ID to get the needed timestamps and populate "Fecha/hora última llamada", "Fecha-Hora inicio llamada con agente",  "Fecha-Hora final llamada con agente", "Fecha/hora intento 1",  "Fecha/hora intento 2",  "Fecha/hora intento 3",  "Fecha/hora intento 4"
+5. Save report as .xsls to client's SFTP and archive it on our server too
