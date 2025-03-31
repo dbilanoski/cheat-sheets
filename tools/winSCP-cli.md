@@ -88,4 +88,4 @@ winscp.com /command "open sftp://username:password@hostname" "get -r /remote/pat
 
 ## References
 
-* For further details, visit the [WinSCP official documentation](https://winscp.net/).
+* [WinSCP official documentation](https://winscp.net/).

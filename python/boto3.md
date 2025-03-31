@@ -33,14 +33,14 @@ When you create a session using `boto3.Session()`, it attempts to authenticate u
 5. **IAM roles** (for EC2, Lambda, etc.)—if running in an AWS environment, Boto3 will try to retrieve credentials from the instance profile or container credentials.
    
 
-Say we have environment variables configured in Windows:
+Say we have temporary environment variables configured in Windows before executing the script:
 
 ```powershell
 $Env:AWS_ACCESS_KEY_ID = "my-key"
 $Env:AWS_SECRET_ACCESS_KEY = "my-secret"
 ```
 
-Then this script uses the via instantiated session.
+Then this script uses the via instantiated session which loads them automatically:
 
 ```python
 import boto3
