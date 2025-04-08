@@ -117,6 +117,9 @@ Solution is to disable the automatic time sync (in case it's not working) and co
 
 1. [Official doc about slmgr commands](https://learn.microsoft.com/en-us/windows-server/get-started/activation-slmgr-vbs-options)
 2. [Official docs about troubleshooting kms](https://learn.microsoft.com/en-us/windows-server/get-started/activation-troubleshoot-kms-general)
+3. [Registry settings for Volume Activation](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/dn502532(v=ws.11))
+
+
 
 
 
