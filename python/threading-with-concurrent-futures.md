@@ -115,7 +115,8 @@ with concurrent.futures.ProcessPoolExecutor(max_workers=3) as executor:
     # Collect results as tasks complete (extra stuff, not needed for the thread lock)
     for future in concurrent.futures.as_completed(futures): 
     try: 
-	    result = future.result() print(f"Sum calculated: {result}") 
+	    result = future.result() 
+	    print(f"Sum calculated: {result}") 
 	except Exception as e: 
 		print(f"Calculation failed: {e}")
 ```

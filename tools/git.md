@@ -283,11 +283,3 @@ git remote -v
 # To update it
 git remote set-url origin https://your-url.git
 ```
-
-
-
-1. Grab campaign's yesterday all calls data from GoContact via report designer api using custom daily template
-2. Grab campaign's historical all calls data from the start of campaign from GoContact via report designer api using custom daily template
-3. Perform needed processing to prepare format, columns, renames, data transformation, etc.
-4. Aggregation and sorting magic on the historical data, then query historical data using Contact ID to get the needed timestamps and populate "Fecha/hora última llamada", "Fecha-Hora inicio llamada con agente",  "Fecha-Hora final llamada con agente", "Fecha/hora intento 1",  "Fecha/hora intento 2",  "Fecha/hora intento 3",  "Fecha/hora intento 4"
-5. Save report as .xsls to client's SFTP and archive it on our server too
