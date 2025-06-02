@@ -64,8 +64,11 @@ file_path.exists() # Returns True
 # Returns parts of the paths
 print(file_path.parts) # Returns ("home","user","documents","new_file.txt")
 
-# Get the name of the file 
+# Get the name of the file with extension
 print(file_path.name) # Outputs: new_file.txt
+
+# Get the name of the file without extension
+print(file_path.stem) # Outputs: new_file
 
 # Get the file extension 
 print(file_path.suffix) # Outputs: .txt 

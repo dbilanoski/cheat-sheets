@@ -27,8 +27,7 @@ The `python-dotenv` library simplifies the management of environment variables i
 	import os
 	
 	# Load environment variables from the .env file
-	#  * dotenv_path=dotenv_pat is only needed if .env file is not in a root directory
-	load_dotenv(dotenv_path=dotenv_path)
+	load_dotenv()
 	
 	
 	# Access the variables using os.getenv
@@ -43,6 +42,58 @@ The `python-dotenv` library simplifies the management of environment variables i
 
 	```
 
+
+### Optional Parameters
+
+Couple of parameters to override the default behaviours:
+
+* **`dotenv_path (str | pathlib.Path)`** 
+	* None by default where it will look for an .env in the current directory. 
+	* Can take relative or absolute path to .env file. Useful when working with packaged executables and task schedulers where working directory might be different than the root directory of the app.
+* **`stream (str | IO[str])`** 
+	* A text stream that can be used if `dotenv_path` is None, defaults to None.
+	* Works with `StringIO` allowing to load variables from other sources than a file
+		*  `load_dotenv(stream=StringIO("USER=foo\nEMAIL=foo@example.org"))`
+*  **`verbose (bool)`** 
+	* If true, it will output warning that the .env file is missing. Defaults to False.
+*  **`overide (bool)`** 
+	* If true, it will overwrite the existing variables in the environment. Defaults to False.
+*  **`encoding (str)`** 
+	* Used to specify the encoding, defaults to utf-8.
+
+### Real World Example
+
+A snippet from a script which will be compiled to an .exe and executed via Windows task scheduler where:
+* Root directory is first identified to ensure correct loading.
+* Parameters are explicitly set for better readability.
+  
+```python
+from dotenv import load_dotenv
+from pathlib import Path
+import os
+
+# Determine the root directory
+root_dir = None
+
+if getattr(sys, "frozen", False):
+	# If frozen attribute is found and set to false, means pyinstaller was used to package the executable
+	# In this case, take the executables parent folder as a root dir
+	# This ensures root dir is always relative to the executable, regardless of the execution context
+	root_dir = Path(sys.executable).parent
+else:
+	# Otherwise, means we are running the py script so root can be it's parent folder
+	root_dir = Path(__file__).parent
+
+# Load the variables from the .env file in the root direcotry
+load_dotenv(
+	dotenv_path = Path(root_dir, ".env"), # Specify path to the .env
+	verbose=False, # Disable verbosity
+	override=False, # Disable overriding existing variables
+	encoding="utf-8" # Specify utf-8 as encoding
+)
+
+```
+
 ## Best Practices
 
 1. Exclude the `.env` file from version control: Add `.env` to your `.gitignore` file to prevent sensitive information from being accidentally shared.
@@ -53,7 +104,7 @@ The `python-dotenv` library simplifies the management of environment variables i
    
     `API_KEY=your_api_key_here DATABASE_URL=your_database_url_here DEBUG=True`
     
-3. Use `os.environ` for default or fallback values. When using `os.getenv`, provide a default value to handle cases where the `.env` file might be missing or incomplete:
+3. When using `os.getenv`, provide a default value to handle cases where the `.env` file might be missing or incomplete:
     
     `api_key = os.getenv("API_KEY", "default_api_key")`
 
