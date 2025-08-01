@@ -112,3 +112,33 @@ sample_lines = [
 - **Use `shutil.copyfileobj()`**: It efficiently handles large files without loading everything into memory at once.
 - **Name your files properly**: Use `.gz` extensions for compressed files to avoid confusion.
 - **Remember `.gz` is for single files**: Use `.tar.gz` if you need to compress multiple files together.
+
+
+\\snlrovaltrp01.odin.local\Batch\P4_WS\GoContact\loadNotifications\SQLsToLoad\MULTISIM\WBT
+
+2022_Q4_777_RET_KOMUNIKACJA_KONWERGENTNA_podsegment.sql
+ - replace  ELSE 'WBTtotal' END as database_name with WBT_KOM as database_name
+   
+2022_Q4_777_RET_KOMUNIKACJA_KONWERGENTNA.sql
+-  replace CASE WHEN CAST(ct_param_09 AS float) <= 30.0 THEN 'Lower' ELSE CASE WHEN CAST(ct_param_09 AS float) > 30.0 THEN 'Higher' 
+ END END END as database_name with ELSE database_name = WBT_KOM
+
+
+2022_Q4_777_RET_KOMUNIKACJA_KONWERGENTNA_1_6.sql
+- leave as is, different db name WBT_KOM_Higher_reko
+
+2022_Q4_777_RET_KOMUNIKACJA_KONWERGENTNA_apple.sql
+- leave as is, different db name WBT_KOM_IOS (handles apple stuff)
+
+2022_Q4_777_RET_KOMUNIKACJA_KONWERGENTNA_ct_param_02.sql
+- leave as is, different db name WBT_KOM_IOS (handles apple stuff)
+
+
+
+2020_Q2_215_RET_LEJEK.sql
+- remove cases and put 'WBT_LEJEK' as database_name
+
+
+2020_Q2_215_RET_LEJEK_podsegment.sql
+- not needed any more as those are comming from 2020_Q2_215_RET_LEJEK but are segmented to go to different database but now will go to same database (WBT_LEJEK)
+- alternatively, replace WBTtotal with WBT_LEJEK as database name in case we want to keep segmentation file for future use 
