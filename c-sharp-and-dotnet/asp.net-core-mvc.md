@@ -449,6 +449,29 @@ Steps:
 	```
 	
 	- Name of the connection string can vary.
+	- Realistic example of connection string in a development environment using Visual Studio included SQL lite database engine:
+	  
+	  ```json
+		// If using locally installed SQL Server:
+		"ConnectionStrings": { "DefaultConnection": "Server=yourLaptopName\\SQLExpress;Database=ToDoAppDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True" }
+		// "DefaultConnection" is the name we will use to reference this string. 
+		// "Server=yourLaptopName\\SQLExpress" connects to the local SQL Server instance. 
+		// "Database=ToDoAppDb" names our database. 
+		// "Trusted_Connection=True" uses Windows authentication. 
+		// "MultipleActiveResultSets=true" allows multiple queries on a single connection.
+		// TrustServerCertificate=True allows authentication even if certificate is not trusted.
+	  ```
+	- Realistic example of connection string in a development environment on locally installed SQL server:
+
+	  ```json
+		// If using lite SQL db engine in the Visual Studio:
+		"ConnectionStrings": { "DefaultConnection": "Server=yourLaptopName\\SQLExpress;Database=ToDoAppDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True" }
+		// "DefaultConnection" is the name we will use to reference this string. 
+		// "Server=(localdb)\\mssqllocaldb" connects to the local SQL Server instance. This is a special connection string for a lightweight, local instance of SQL Server that comes with Visual Studio. It's perfect for development.
+		// "Database=ToDoAppDb" names our database. 
+		// "Trusted_Connection=True" uses Windows authentication. 
+		// "MultipleActiveResultSets=true" allows multiple queries on a single connection.
+	  ```
 
 3. Create a Model Class to represent the structure of a table
 	- This actually represents the shape of a single item (what properties it consists of) but will be used as a table schema by the EF Core engine to create a table with pluralized name automatically (Item > table name Items)-

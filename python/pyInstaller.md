@@ -24,7 +24,7 @@ This creates a bundle **dist/** directory containing the standalone executable a
 Let’s say you work on Windows machine with venv and want to create a single-file executable with no console window, a custom icon and include all installed packages in a venv environment:
 
 ```powershell
-pyinstaller --onefile --noconsole --icon=myicon.ico --paths ".\Lib\site-packages" myscript.py
+pyinstaller --onefile --noconsole --icon=myicon.ico --paths ".\Lib\site-packages" myscript.py --clean
 ```
 
 ### Common PyInstaller Options
