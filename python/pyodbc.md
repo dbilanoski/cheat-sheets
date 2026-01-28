@@ -24,6 +24,9 @@ Before using `pyodbc`, make sure that:
 	  print(pyodbc.drivers())
   ```
 
+Or to check them on the server, run the `C:\_WINDOWS_\SYSTEM32\ODBCAD32.EXE` and see under "Drivers" tab what's installed.
+
+Driver packs can be downloaded from [here](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server).
 ## Basic usage
 
 To install the library:
@@ -98,6 +101,24 @@ connection_string = (
 
 This authenticates using the Windows user who is running the Python process.
 Useful for automation when task is scheduled in the context of the user having rights to access database.
+
+## Basic Understanding Of The Working Example
+
+We create connection from the connection string, then create cursor object which can execute SQL commands and retrieve data.  Connection is the _tunnel_ to the database, and the Cursor is the _truck_ that goes back and forth through that tunnel carrying data.
+  
+- **Connection (`conn`)**:
+    - Manages the session (login, password).
+    - Manages Transactions (`conn.commit()`, `conn.rollback()`).
+    - It stays open for the duration of your script (usually).
+        
+- **Cursor (`cursor`)**:
+    - **Executes SQL**: `cursor.execute("SELECT...")`
+    - **Holds Context**: It remembers "where" you are in a result set.
+    - **Fetches Data**: `cursor.fetchone()` (get next row) or `cursor.fetchall()` (get all).
+    - It is temporary. You typically create one, run a query, and close it.
+- Context Manager:
+	- `with conn.cursor() as cursor:`
+	- It ensures that even if your code crashes inside the block, the cursor is **automatically closed** properly.
 
 ## Real World Example
 
@@ -271,3 +292,9 @@ else:
     
 - **Close connections explicitly when not using context managers**  
     Always call `.close()` on cursors and connections if not handled automatically.
+
+
+
+## Resources
+
+1. [Microsoft site with ODBC drivers](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server)

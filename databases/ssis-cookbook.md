@@ -217,3 +217,149 @@ FileSortingWizzard 3000.
 		3. "+" is concatenation operator.
 		   
 5. Test your script both for content and for email sending.
+
+### Send Email From Script Task
+
+This is needed due to different limitations, such as 256 char limit for "To" or "CC" fields in the "Send email" task.
+
+
+Steps:
+1. Create variables to store all needed data (those listed in "retrieve variables from ssis" below.)
+2. Use this snippet to code the email sending function
+   ```csharp
+   /* Add these using statements at the top of the ScriptMain.cs file
+   outside the ScriptMain class:
+*/
+using System.Net.Mail;
+using System.Net;
+using Microsoft.SqlServer.Dts.Runtime;
+using System.IO; 
+using System;
+
+public void Main()
+{
+    // --- 1. Retrieve Variables from SSIS ---
+    
+    // Get the long list of recipients for the 'To' field
+    string toList = Dts.Variables["User::email_to"].Value.ToString();
+    // Get the list of recipients for the 'CC' field
+    string ccList = Dts.Variables["User::email_cc"].Value.ToString();
+    // Get the list of recipients for the 'BCC' field
+    string bccList = Dts.Variables["User::email_bcc"].Value.ToString();
+    // Get the sender's email address
+    string mailFrom = Dts.Variables["User::email_from"].Value.ToString();
+    // Get the email subject
+    string subject = Dts.Variables["User::email_subject"].Value.ToString();
+    // Get the email body content (can be HTML)
+    string body = Dts.Variables["User::email_message"].Value.ToString();
+    // Get the SMTP relay/gateway server address
+    string smtpHost = Dts.Variables["User::email_smtp_host"].Value.ToString();
+    // Get the SMTP port number (usually 25)
+    int smtpPort = (int)Dts.Variables["User::email_smtp_port"].Value;
+    // Get the full file path for the attachment
+    string attachmentPath = Dts.Variables["User::File_Full_Email"].Value.ToString();
+
+    try
+    {
+        // --- 2. Create Mail Objects ---
+        
+        // Create the main email message object
+        MailMessage mail = new MailMessage();
+        // Create the SMTP client object, passing the server host
+        SmtpClient SmtpServer = new SmtpClient(smtpHost);
+
+        // Set the sender's address
+        mail.From = new MailAddress(mailFrom);
+        // Set the subject line
+        mail.Subject = subject;
+        // Set the body content
+        mail.Body = body;
+        // Tell the mail client to interpret the body as HTML (optional, set to false for plain text)
+        mail.IsBodyHtml = true; 
+
+        // --- 3. Add Recipients (Procedural Workaround to bypass 256-char limit) ---
+        
+        // Add 'To' Recipients
+        if (!string.IsNullOrEmpty(toList))
+        {
+            // Split the string by semicolon and ignore any empty entries
+            string[] toRecipients = toList.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string recipient in toRecipients)
+            {
+                // Add each individual address
+                mail.To.Add(recipient.Trim());
+            }
+        }
+        
+        // Add 'CC' Recipients
+        if (!string.IsNullOrEmpty(ccList))
+        {
+            // Split the string by semicolon and ignore any empty entries
+            string[] ccRecipients = ccList.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string recipient in ccRecipients)
+            {
+                // Add each individual address
+                mail.CC.Add(recipient.Trim());
+            }
+        }
+
+        // Add 'BCC' Recipients
+        if (!string.IsNullOrEmpty(bccList))
+        {
+            // Split the string by semicolon and ignore any empty entries
+            string[] bccRecipients = bccList.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string recipient in bccRecipients)
+            {
+                // Add each individual address
+                mail.Bcc.Add(recipient.Trim());
+            }
+        }
+
+
+        // --- 4. Add Attachment ---
+        
+        // Check if the path variable has a value AND if the file physically exists on the server
+        if (!string.IsNullOrEmpty(attachmentPath) && File.Exists(attachmentPath))
+        {
+            // Create a new Attachment object using the file path
+            Attachment attachment = new Attachment(attachmentPath);
+            // Add the attachment to the email's attachments collection
+            mail.Attachments.Add(attachment);
+        }
+        else if (!string.IsNullOrEmpty(attachmentPath))
+        {
+             // If a path was provided but the file is missing, fire an SSIS warning event
+             Dts.Events.FireWarning(0, "Script Task Attachment", 
+                 "Attachment file not found at path: " + attachmentPath, 
+                 string.Empty, 0);
+        }
+
+        // --- 5. Configure SMTP Client for Anonymous/Gateway Authentication ---
+        
+        // Set the port
+        SmtpServer.Port = smtpPort;
+        
+        // Set to false to prevent the client from attempting Windows Authentication credentials.
+        // This is necessary for anonymous gateways/relays.
+        SmtpServer.UseDefaultCredentials = false; 
+
+        // If your gateway requires SSL/TLS encryption, uncomment the line below:
+        // SmtpServer.EnableSsl = true;
+
+        // --- 6. Send the Email ---
+        SmtpServer.Send(mail);
+
+        // Set the task result to Success
+        Dts.TaskResult = (int)DTSExecResult.Success;
+    }
+    catch (Exception ex)
+    {
+        // If an error occurs (e.g., SMTP connection fails, invalid recipient), log it
+        Dts.Events.FireError(0, "Script Task Email Error", 
+            "Failed to send mail: " + ex.Message, 
+            string.Empty, 0);
+        // Set the task result to Failure
+        Dts.TaskResult = (int)DTSExecResult.Failure;
+    }
+}
+   ```
