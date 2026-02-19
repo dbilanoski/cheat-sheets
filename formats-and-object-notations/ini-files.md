@@ -24,10 +24,17 @@ bulk_loading_rows_limit=1000
 ## Parsing INI Files With Python
 
 
+
 ```python
 import configparser
 
 config = configparser.ConfigParser()
+
+# By default, ConfigParser converts keys to lowercase (optionxform = str.lower). 
+# We override this to str() so "Address" stays "Address". 
+config.optionxform = str
+
+# Parse ini file
 config.read('config.ini')
 
 # Accessing values
