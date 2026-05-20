@@ -69,8 +69,8 @@ Work is performed on a new, separate branch. Once committed to this branch, a pu
 1.  **Make sure your local `main` or `master` branch is up-to-date:**
 
     ```powershell
-    git checkout main # or git checkout master
-    git pull origin main # or git pull origin master
+    git checkout main
+    git pull origin main
     ```
 
 2.  **Create and switch to a new branch, following the naming convention:**
@@ -124,6 +124,110 @@ Work is performed on a new, separate branch. Once committed to this branch, a pu
     git branch -d feature/your-feature-name 
     ```
 
+### Reverting to Older Versions
+
+During development or after deployment, it may be necessary to return to a previous stable state. Git provides multiple approaches depending on the situation and whether the changes have been shared with others.
+
+|Scenario|Recommended Approach|
+|---|---|
+|Undo a specific change safely|`git revert`|
+|Inspect or branch from an old version|`git checkout`|
+|Reset branch history (local or controlled use)|`git reset`|
+|Restore a known release version|Git tags|
+#### Reverting a Commit (Safe for Shared Branches)
+
+Use this method when a change has already been pushed and possibly merged into `main` as it:
+
+- Creates a new commit that undoes the specified commit.
+- Does **not rewrite history** (safe for teams).
+
+1. List the commit history to find the one you wish to revert to
+   
+   ```powershell
+   git log --oneline
+   ```
+   
+2. Revert to that commit. New commit will be created reversing the changes.
+   
+   ```powershell
+   git revert <commit-hash>
+   ```
+   
+3. Push the reverted commit 
+
+```powershell
+git push origin main
+```
+
+#### Restore Project To A Previous Commit (Read Only By Default)
+
+Use this to inspect or temporarily work with a previous state.
+
+1. List the commit history to find the one you wish to check out
+   
+   ```powershell
+     git log --oneline
+   ```
+   
+1. Check-out to an earlier commit. This puts the repository in a **detached HEAD** state, meaning it's read only.
+   
+   ```powershell
+   git checkout <commit-hash>
+   ```
+
+If you want to continue working from that point:
+
+```powershell
+git checkout -b feature/restore-from-old-version
+```
+
+#### Resetting to a Previous Commit (Use with Caution)
+
+This method rewrites history and should only be used in controlled scenarios. It:
+- Rewrites commit history.
+- Can disrupt other team members.
+- Use only when working alone or with team agreement.
+
+**Soft Reset (keeps changes staged):**
+
+```powershell
+git reset --soft <commit-hash>
+```
+
+**Hard Reset (discards all changes):**
+
+```powershell
+git reset --hard <commit-hash>
+```
+
+If the branch has already been pushed:
+
+```powershell
+git push --force
+```
+
+#### Using Tags for Versioning (Recommended for Releases)
+
+TODO: Need to test, review this add tagging to the flow so releases have them. Might be good fit for us since almost every change is a release and reverting to previous release might be cleanest approach.
+
+1. List tags
+   
+   ```powershell
+   git tag
+   ```
+   
+2. Check out a tagged version
+   
+   ```powershell
+   git checkout v1.0.0
+   ```
+   
+3. Create a branch from it which can later be deployed
+   
+   ```powershell
+   git checkout -b hotfix/v1.0.0 v1.0.0
+   ```
+
 ## Conventions & Standards
 ###  Commit Messages Conventions
 
@@ -141,16 +245,9 @@ Work is performed on a new, separate branch. Once committed to this branch, a pu
 - **fix:** Resolves a bug or issue affecting functionality.
 - **refactor:** Improves existing code structure without changing behavior (e.g., renaming variables, optimizing logic).
 - **docs:** Updates documentation, comments, or README files.
-- **test:** Adds or updates automated tests.
-
-**Examples:**
-
-- **feat:** Introduces a new feature or modifies existing functionality (changes in core logic \ behaviour).
-- **fix:** Resolves a bug or issue affecting functionality.
-- **refactor:** Improves existing code structure without changing behavior (e.g. renaming variables, optimizing logic).
-- **docs:** Updates documentation, comments, or README files.
-- **test:** Optional. adds or updates automated tests (future wise).
+- **test:**  Optional, adds or updates automated tests.
 - **chore:** Optional and to be considered - for things like updating configuration files, renaming files without changing the logic, metadata\versioning or dependency updates, CI/CD tasks.
+
 
 **Guidelines:**
 

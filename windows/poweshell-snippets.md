@@ -1,4 +1,18 @@
 
+## Utility Scripts & Helpers
+### Keep The Screen On (Prevent Locking)
+
+Open PowerShell IDE and run this one. 
+Scroll Lock is used because it doesn't interfere with most running programs.
+
+```powershell
+$WShell = New-Object -Com Wscript.Shell
+while ($true) {
+  $WShell.SendKeys('{SCROLLLOCK}')
+  Start-Sleep -Seconds 60
+}
+```
+
 ## Logs & Events
 
 ### Top 5 Logged Tasks & Logs Time-Span Window
