@@ -7,7 +7,7 @@ HRESULT is a 32-bit architectural structure used by Windows to report system, se
 - It typically shown as a massive 10-digit decimal number (`2147942667`) or an 8-digit Hex code (`0x8007010B`).  
 - Because binary is impossible for humans to read, Windows spits out the decimal equivalent, which ends up looking like random garbage sometimes (like in Scheduled Tasks).
 
-***Where it's used:** Universal across Windows Services, Task Scheduler, Windows Update, IIS Web Server, MSI Installers, PowerShell, and .NET exceptions.
+**Where it's used:** Universal across Windows Services, Task Scheduler, Windows Update, IIS Web Server, MSI Installers, PowerShell, and .NET exceptions.
 
 ### The Anatomy of an HRESULT (Hex View)
 
@@ -51,3 +51,5 @@ If your error starts with `8007`, the last 4 digits commonly translate to these 
 ## References
 
 1. [Microsoft Docs About HRESULT](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-erref/0642cb2f-2075-4469-918c-4441e69c548a)
+2. [Binary Hex Converter (Good Number Format Converters)](https://www.binaryhexconverter.com/)
+
